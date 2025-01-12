@@ -1,0 +1,22 @@
+# Python
+*.pyc
+*.pyo
+__pycache__/
+.pytest_cache/
+.coverage
+.DS_Store
+.ipynb_checkpoints/
+
+# Jupyter Notebooks
+.ipynb
+
+# IDE-specific files
+.vscode/
+.idea/
+
+# Virtual environments
+.venv/
+
+
+# Logs
+*.log
