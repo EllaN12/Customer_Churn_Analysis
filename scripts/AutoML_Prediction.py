@@ -28,9 +28,12 @@ from pyspark.ml import *
 #AutoML prediction
 from pyspark.sql import SparkSession
 import h2o
-from ai.h2o.sparkling import H2OContext, H2OConf
+import pysparkling
+from pysparkling import *
 from h2o.automl import H2OAutoML
+from h2o.automl import H2OAutoML 
 
+import os
 
 #import Data
 # %%
@@ -40,8 +43,15 @@ spark = SparkSession.builder \
     .getOrCreate()
 
     
+
+#Paths
+data_dir = "Prediction_Data/final_data.csv"
+absolute_path_data = os.path.abspath(data_dir)
+print(absolute_path_data)
+
+
 # reading the data
-final_data = spark.read.csv("/Users/ellandalla/Desktop/Customer_Churn_Analysis-/venv/Data/final_data.csv", header=True, inferSchema=True)
+final_data = spark.read.csv(absolute_path_data, header=True, inferSchema=True)
 final_data.show(5)
 
 data_df = final_data.toPandas()
@@ -111,7 +121,6 @@ h2o_version = '3.46.0.3'
 
 
 #Prediction
-
 predictions_h2o = model_h2o_stacked_ensemble.predict(data_h2o)
 
 predictions_df = predictions_h2o.as_data_frame()
@@ -121,6 +130,7 @@ predictions_df
 final_prediction_df = pd.concat([data_df, predictions_df], axis = 1)
 
 df = final_prediction_df
+
 
 
 

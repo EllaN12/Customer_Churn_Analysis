@@ -1,6 +1,7 @@
 
 #%%
 import pandas as pd
+import numpy as np
 # importing spark session
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import *
@@ -23,15 +24,21 @@ from pyspark.sql import DataFrame
 from pyspark.ml.classification import *
 from pyspark.ml.evaluation import *
 from pyspark.ml import *
+import os
+from pyspark.ml.evaluation import BinaryClassificationEvaluator, MulticlassClassificationEvaluator
+from sklearn.metrics import roc_curve, precision_recall_curve, auc
+
 
 # %%
-
 #Building Spark Session
 spark = SparkSession.builder.appName("Customer_Churn_Prediction").getOrCreate()
 spark
 
+path = 'Prediction_Data/dataset.csv'
+data_path = os.path.abspath(path)
+print(data_path)
 # reading the data
-data = spark.read.csv("/Users/ellandalla/Desktop/Customer_Churn_Analysis-/venv/Data/dataset.csv", header=True, inferSchema=True)
+data = spark.read.csv(data_path, header=True, inferSchema=True)
 data.show(5)
 
 #spark.stop()
@@ -49,7 +56,7 @@ data.dtypes
 #Exploratory Data Analysis
 # %%
 
-#data_df = data.toPandas()
+data_df = data.toPandas()
 
 def numeric_profile_data(data):
     """Panda Profiling Function
@@ -188,7 +195,9 @@ data.select("*").where(col("tenure") > 100).show()
 #Save the preprocessed data
 final_data = data
 final_data.show(5)
-data.write.mode("overwrite").option("header", "true").csv("/Users/ellandalla/Desktop/Customer_Churn_Analysis-/venv/Data/final_data.csv")
+path = 'Prediction_Data/final_dataset.csv'
+data_path = os.path.abspath(path)
+data.write.mode("overwrite").option("header", "true").csv(data_path)
 
 #%%
 ## Feature Engineering - Numerical
@@ -238,13 +247,19 @@ model = pipeline.fit(train)
 
 # Make predictions using test data
 predictions_test = model.transform(test)
-predictions_test.select("Churn", "Churn_Indexed", "prediction").show()
+
+
+#get the schema:
+predictions_test.printSchema()
+
 
 #%%
 ## Model Evaluation
 evaluator = BinaryClassificationEvaluator(labelCol="Churn_Indexed")
+# AUC
 auc_test = evaluator.evaluate(predictions_test, {evaluator.metricName: "areaUnderROC"})
 auc_test
+
 
 # evaluate the model using the training data
 predictions_train = model.transform(train)
@@ -282,6 +297,122 @@ df = pd.DataFrame(list(zip(maxDepths, test_accs, train_accs)), columns = ["maxDe
 
 df
 
+
+#%%
+# Other Eval Metrics
+def calculate_curve_points(labels, scores, curve_type='roc'):
+    """
+    Calculate points for ROC or PR curve without sklearn
+    """
+    # Sort scores and corresponding labels
+    sorted_indices = np.argsort(scores)[::-1]
+    sorted_scores = scores[sorted_indices]
+    sorted_labels = labels[sorted_indices]
+    
+    # Calculate cumulative sums
+    tps = np.cumsum(sorted_labels)
+    fps = np.cumsum(1 - sorted_labels)
+    
+    # Calculate rates
+    tpr = tps / tps[-1]
+    fpr = fps / fps[-1]
+    
+    if curve_type == 'roc':
+        return fpr, tpr
+    else:  # PR curve
+        precision = tps / (tps + fps)
+        recall = tpr
+        return precision, recall
+
+def calculate_auc(x, y):
+    """
+    Calculate area under curve using trapezoidal rule
+    """
+    return np.trapz(y, x)
+
+
+
+def evaluate_model(predictions_test):
+    # ROC-AUC
+    evaluator_roc = BinaryClassificationEvaluator(
+        labelCol="Churn_Indexed",
+        rawPredictionCol="rawPrediction",
+        metricName="areaUnderROC"
+    )
+    roc_auc = evaluator_roc.evaluate(predictions_test)
+
+
+    # PR-AUC evaluator
+    pr_evaluator = BinaryClassificationEvaluator(
+        labelCol="Churn_Indexed",
+        metricName="areaUnderPR"
+    )
+    pr_auc = pr_evaluator.evaluate(predictions_test)
+    
+    
+    # F1 Score
+    evaluator_f1 = MulticlassClassificationEvaluator(
+        labelCol="Churn_Indexed",
+        predictionCol="prediction",
+        metricName="f1"
+    )
+    f1_score = evaluator_f1.evaluate(predictions_test)
+    
+   # Get prediction probabilities
+    predictions_pd = predictions_test.select("Churn_Indexed", "probability").toPandas()
+    predictions_pd["score"] = predictions_pd["probability"].apply(lambda x: float(x[1]))
+    
+    # Convert to numpy arrays
+    labels = predictions_pd["Churn_Indexed"].values
+    scores = predictions_pd["score"].values
+    
+    
+    # Calculate curve points
+    fpr, tpr = calculate_curve_points(labels, scores, 'roc')
+    precision, recall = calculate_curve_points(labels, scores, 'pr')
+    
+    
+    
+    # Plot curves
+    plt.figure(figsize=(12, 5))
+
+    # Plot ROC curve
+    plt.subplot(1, 2, 1)
+    plt.plot(fpr, tpr, label=f'ROC curve (AUC = {roc_auc:.3f})')
+    plt.plot([0, 1], [0, 1], 'k--')  # diagonal line
+    plt.xlim([0.0, 1.0])
+    plt.ylim([0.0, 1.05])
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('ROC Curve')
+    plt.legend(loc="lower right")
+
+
+    # Plot PR curve
+    plt.subplot(1, 2, 2)
+    plt.plot(recall, precision, label=f'PR curve (AUC = {pr_auc:.3f})')
+    plt.xlim([0.0, 1.0])
+    plt.ylim([0.0, 1.05])
+    plt.xlabel('Recall')
+    plt.ylabel('Precision')
+    plt.title('Precision-Recall Curve')
+    plt.legend(loc="lower right")
+    
+    plt.tight_layout()
+    plt.show()
+
+
+    # Print all metrics
+    print("\nModel Evaluation Metrics:")
+    print(f"ROC-AUC Score: {roc_auc:.3f}")
+    print(f"PR-AUC Score: {pr_auc:.3f}")
+    print(f"F1 Score: {f1_score:.3f}")
+    
+    return roc_auc, pr_auc, f1_score
+    
+    
+  
+evaluate_model(predictions_test)
 
 #%%
 #Model Deployment

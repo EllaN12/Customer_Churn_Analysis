@@ -1,12 +1,14 @@
-
+#%%
 # Importing Libraries
 import pandas as pd
+import os
 
 
 # Importing Data
+path = 'Prediction_Data/churn_prediction_df.pkl'
+data_path = os.path.abspath(path)
 
-
-Churn_data = pd.read_pickle('/Users/ellandalla/Desktop/Customer_Churn_Analysis-/venv/Data/churn_prediction_df.pkl')
+Churn_data = pd.read_pickle(data_path)
 Churn_data.rename(columns ={'Churn': "Actual_Churn", 
                             'predict':"Predicted_Churn",
                             "No": "No_Churn_Rate",
@@ -69,4 +71,7 @@ recommendation_df['contract_label'].unique()
 
 
 #save
-recommendation_df.to_csv('/Users/ellandalla/Desktop/Customer_Churn_Analysis-/venv/Data/recommendation.csv')
+path = 'Prediction_Data/recommendation.csv'
+data_path = os.path.abspath(path)
+recommendation_df.to_csv(data_path)
+# %%

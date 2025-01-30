@@ -13,6 +13,7 @@ from plotly import graph_objects as go
 import pandas as pd
 
 import pathlib
+import os
 
 
 
@@ -44,9 +45,11 @@ COMMON_STYLE ={
 BASE_PATH = pathlib.Path(__file__).parent.resolve()
 #ART_PATH = BASE_PATH.joinpath("artifacts").resolve()
 
+path = 'Prediction_Data/churn_prediction_df.pkl'
+data_path = os.path.abspath(path)
 
 # DATA
-Churn_data = pd.read_pickle('/Users/ellandalla/Desktop/Customer_Churn_Analysis/Prediction_Data/churn_prediction_df.pkl')
+Churn_data = pd.read_pickle(data_path)
 
 Churn_data.rename(columns ={'Churn': "Actual_Churn", 
                             'predict':"Predicted_Churn",
@@ -297,10 +300,14 @@ def update_categorical_drivers(input_id_2):
     prevent_initial_call=True,
 )
 
+
+path = 'Prediction_Data/recommendation.csv"'
+data_path = os.path.abspath(path)
+
 def download_strategy(n_clicks):
     if n_clicks is None:
         raise PreventUpdate
-    return dcc.send_file("/Users/ellandalla/Desktop/Customer_Churn_Analysis/Prediction_Data/recommendation.csv")
+    return dcc.send_file(data_path)
 if __name__ == '__main__':
     app.run_server(debug=True)
 
