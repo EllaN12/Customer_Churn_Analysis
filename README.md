@@ -20,7 +20,7 @@ This project aims to predict customer churn for a telecommunications company usi
 - Machine Learning: (Assuming you use a library like scikit-learn)
   . Predictive Modeling: Developed churn prediction models using machine learning algorithms from scikit-learn (or similar library).- 
 
-### Machine Learning (if applicable)
+### Machine Learning
 - Models tested:
 . Decision Tree Classifier:
 . H20 AutoML stacked ensemble model  
