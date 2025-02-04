@@ -1,4 +1,4 @@
-# Project Title
+# Customer Churn Analysis
 
 ## Overview
 This project aims to predict customer churn for a telecommunications company using a dataset of 7043 customers. By analyzing customer demographics and developing predictive models, we can identify key factors driving churn, such as contract types, service usage, and customer tenure. These insights will enable the company to proactively address customer concerns, improve customer retention strategies, and ultimately reduce revenue loss due to churn.
@@ -21,10 +21,10 @@ This project aims to predict customer churn for a telecommunications company usi
   . Predictive Modeling: Developed churn prediction models using machine learning algorithms from scikit-learn (or similar library).- 
 
 ### Machine Learning
-- Models tested:
+#### Models tested:
 . Decision Tree Classifier:
 . H20 AutoML stacked ensemble model  
-- Evaluation metrics:
+#### Evaluation metrics:
 . DTC:
 Auc = 72 %
 Auc_pr = 52.6%
@@ -38,41 +38,37 @@ Roc_Auc curve. Upward slopping with 80% TPR at 20% FPR
 Auc_pr = downward slopping 
 F1 score: 64%
 
-- Performance summary:
+#### Performance summary:
 . DTC:
 The ROC AUC score suggests marginal performance beyond random guessing. While the F1 score of 78% indicates a reasonable balance between precision and recall, precision drops sharply at a threshold where approximately 20% of instances are predicted as positive, suggesting a potential trade-off between recall and precision
 
 . H20 AutoML satcked Ensemble:
-"The stacked ensemble model outperforms the Decision Tree Classifier (DTC), achieving an AUC score of 87% in distinguishing customers likely to churn. It demonstrates strong performance in identifying a significant portion of true positive cases early in testing."
-"However, the model exhibits a downward-sloping Precision-Recall curve and an F1 score of 66%, indicating potential room for improvement in balancing precision and recall."
+The stacked ensemble model outperforms the Decision Tree Classifier (DTC), achieving an AUC score of 87% in distinguishing customers likely to churn. It demonstrates strong performance in identifying a significant portion of true positive cases early in testing.
+However, the model exhibits a downward-sloping Precision-Recall curve and an F1 score of 66%, indicating potential room for improvement in balancing precision and recall.
 "Based on its overall performance, the stacked ensemble model was selected for making predictions."
 
-The stacked ensemble model was retained to make predictions .
-
-- Model limitations:
+#### Models limitations:
 . Both models may be susceptible to biases arising from class imbalance within the dataset.
 . Features such as gender, TV streaming, and movie streaming subscriptions demonstrated limited predictive power.
 This is likely due to an approximately equal distribution of subscribers and non-subscribers for these services within the population, hindering their ability to effectively distinguish between churning and non-churning customers.
 
 
 ## Key Findings
-- Main insights discovered;
-- Some feature classified as important did not provide enough details about users ability to churn ( example : gender and equal % of men and women were likely to churn).
-- From the exploratory analysis and the review of feature importance from the Decision Tree Classifier, it is evident that customers with a tenure of 40 days or less and those who subscribe to monthly contracts are more likely to churn. Additional factors contributing to churn include: Demographics: Senior citizens and customers without dependents. Lack of Subscriptions: Customers not subscribing to add-on services such as device protection plans, online backups, and tech support.
+#### Main insights discovered
+Some feature classified as important did not provide enough details about users ability to churn ( example : gender and equal % of men and women were likely to churn).
+From the exploratory analysis and the review of feature importance from the Decision Tree Classifier, it is evident that customers with a tenure of 40 days or less and those who subscribe to monthly contracts are more likely to churn. Additional factors contributing to churn include: Demographics: Senior citizens and customers without dependents. Lack of Subscriptions: Customers not subscribing to add-on services such as device protection plans, online backups, and tech support.
 Refer to the dashbaord:  http://dashapp-env-v7-env.eba-m32nwi36.us-east-1.elasticbeanstalk.com
-- Business implications:
-. Telco company reduce customers attrition 
-.. by Developing Comprehensive Contract Plans with Enhanced Add-On Services for Data and Voice Customers
-.. Develop and Conduct Targeted Marketing Campaigns based on demeographics ( senior citizens, customers more likely to churn)
+#### Business implications:
+Telco company cn reduce customers attrition by:
+- Developing Comprehensive Contract Plans with Enhanced Add-On Services for Data and Voice Customers.
+- Developing and Conducting targeted marketing campaigns based on demeographics ( senior citizens, customers more likely to churn).
 
 
 ## Deliverables
-List of what's included in the repository:
-- 
 - Scripts
 - Documentation
 - Models
-- Datasets (if public)
+- Datasets
 
 ## Installation Instructions
 
@@ -120,9 +116,9 @@ project/
 ```
 
 ### Key Components
-- **Analysis.py implements** Exploratory Data Aanalysis and decision Tree Classifier modeling and evaluation
-- **AutoML_Prediction.py**  predictive modeling using H20 AutoML 
-- **recommendation.py** list of customers who are more likely than not to churn.
+**Analysis.py implements** Exploratory Data Aanalysis and decision Tree Classifier modeling and evaluation
+**AutoML_Prediction.py**  predictive modeling using H20 AutoML 
+**recommendation.py** list of customers who are more likely than not to churn.
 
 
 
