@@ -1,137 +1,138 @@
-# Project Title
+# Customer Churn Prediction Analysis
 
 ## Overview
-This project aims to predict customer churn for a telecommunications company using a dataset of 7043 customers. By analyzing customer demographics and developing predictive models, we can identify key factors driving churn, such as contract types, service usage, and customer tenure. These insights will enable the company to proactively address customer concerns, improve customer retention strategies, and ultimately reduce revenue loss due to churn.
 
-## Business Problem / Context
+This project predicts customer churn for a telecommunications company using a dataset of 7,043 customers with 21 attributes. By analyzing customer demographics and developing predictive models, we identify key factors driving churn, such as contract types, service usage, and customer tenure. These insights enable the company to proactively address customer concerns, improve retention strategies, and reduce revenue loss.
+
+## Business Problem
+
 - Develop predictive models to accurately forecast customer churn
-- Conduct in-depth analysis to identify key demographic factors that significantly influence churn rates
-- Formulate targeted customer retention strategies based on the identified churn drivers.
+- Identify key demographic factors that significantly influence churn rates
+- Formulate targeted customer retention strategies based on identified churn drivers
 
-## Data Sources
-- A dataset of 7,043 customers with 21 attributes
-- Source of the data: Kaggle : https://www.kaggle.com/datasets/blastchar/telco-customer-churn
+## Data Source
 
-## Methods and Tools
+- **Dataset**: 7,043 customers with 21 attributes
+- **Source**: [Kaggle - Telco Customer Churn](https://www.kaggle.com/datasets/blastchar/telco-customer-churn)
+
+## Technical Stack
+
 ### Data Processing & Analysis
-- Data Analysis and Feature Engineering:
-  . Pandas and Spark: Utilized for data cleaning, exploration, and manipulation.
-  . Spark ML: Employed feature engineering techniques like imputation for missing values, vector assembly for combining features, and scaling/encoding for numerical and categorical data, respectively.
-- Machine Learning: (Assuming you use a library like scikit-learn)
-  . Predictive Modeling: Developed churn prediction models using machine learning algorithms from scikit-learn (or similar library).- 
+- **PySpark & Spark SQL**: Data cleaning, exploration, and manipulation at scale
+- **Pandas & NumPy**: Data manipulation and analysis
+- **Spark ML**: Feature engineering (imputation, vector assembly, scaling, encoding)
 
 ### Machine Learning
-- Models tested:
-. Decision Tree Classifier:
-. H20 AutoML stacked ensemble model  
-- Evaluation metrics:
-. DTC:
-Auc = 72 %
-Auc_pr = 52.6%
-F1 score = 78.5 % 
-Roc_Auc curve: upward sloppping and steeper
-PR_curve: upwards splopping up to 20% recall rate then downward slopping 
-Feature Importance: Tenure, Gender, Device Protection
-. H20 AutoML satcked Ensemble: 
-Auc = 87%
-Roc_Auc curve. Upward slopping with 80% TPR at 20% FPR
-Auc_pr = downward slopping 
-F1 score: 64%
+- **Decision Tree Classifier**: Baseline interpretable model
+- **H2O AutoML Stacked Ensemble**: Advanced ensemble model for optimal performance
+- **MLflow**: Experiment tracking and model versioning
 
-- Performance summary:
-. DTC:
-The ROC AUC score suggests marginal performance beyond random guessing. While the F1 score of 78% indicates a reasonable balance between precision and recall, precision drops sharply at a threshold where approximately 20% of instances are predicted as positive, suggesting a potential trade-off between recall and precision
+### Visualization & Deployment
+- **Matplotlib & Plotly**: Data visualization
+- **Dash**: Interactive web dashboard
+- **AWS Elastic Beanstalk**: Cloud deployment
 
-. H20 AutoML satcked Ensemble:
-"The stacked ensemble model outperforms the Decision Tree Classifier (DTC), achieving an AUC score of 87% in distinguishing customers likely to churn. It demonstrates strong performance in identifying a significant portion of true positive cases early in testing."
-"However, the model exhibits a downward-sloping Precision-Recall curve and an F1 score of 66%, indicating potential room for improvement in balancing precision and recall."
-"Based on its overall performance, the stacked ensemble model was selected for making predictions."
+## Model Performance
 
-The stacked ensemble model was retained to make predictions .
+| Model | AUC-ROC | AUC-PR | F1 Score |
+|-------|---------|--------|----------|
+| Decision Tree Classifier | 72% | 52.6% | 78.5% |
+| H2O AutoML Stacked Ensemble | **87%** | - | 64% |
 
-- Model limitations:
-. Both models may be susceptible to biases arising from class imbalance within the dataset.
-. Features such as gender, TV streaming, and movie streaming subscriptions demonstrated limited predictive power.
-This is likely due to an approximately equal distribution of subscribers and non-subscribers for these services within the population, hindering their ability to effectively distinguish between churning and non-churning customers.
+**Selected Model**: H2O AutoML Stacked Ensemble (87% AUC-ROC)
 
+The stacked ensemble model significantly outperforms the baseline Decision Tree Classifier, achieving strong performance in identifying customers likely to churn with 80% True Positive Rate at 20% False Positive Rate.
 
 ## Key Findings
-- Main insights discovered;
-- Some feature classified as important did not provide enough details about users ability to churn ( example : gender and equal % of men and women were likely to churn).
-- From the exploratory analysis and the review of feature importance from the Decision Tree Classifier, it is evident that customers with a tenure of 40 days or less and those who subscribe to monthly contracts are more likely to churn. Additional factors contributing to churn include: Demographics: Senior citizens and customers without dependents. Lack of Subscriptions: Customers not subscribing to add-on services such as device protection plans, online backups, and tech support.
-Refer to the dashbaord:  http://dashapp-env-v7-env.eba-m32nwi36.us-east-1.elasticbeanstalk.com
-- Business implications:
-. Telco company reduce customers attrition 
-.. by Developing Comprehensive Contract Plans with Enhanced Add-On Services for Data and Voice Customers
-.. Develop and Conduct Targeted Marketing Campaigns based on demeographics ( senior citizens, customers more likely to churn)
 
+### Churn Drivers Identified
+1. **Tenure**: Customers with tenure of 40 days or less are significantly more likely to churn
+2. **Contract Type**: Monthly contract subscribers show higher churn rates
+3. **Demographics**: Senior citizens and customers without dependents are at higher risk
+4. **Service Subscriptions**: Customers not subscribing to add-on services (device protection, online backup, tech support) churn more frequently
 
-## Deliverables
-List of what's included in the repository:
-- 
-- Scripts
-- Documentation
-- Models
-- Datasets (if public)
+### Feature Importance
+- **High Impact**: Tenure, Contract Type, Device Protection
+- **Low Impact**: Gender, TV Streaming, Movie Streaming (equal distribution in churn/non-churn groups)
 
-## Installation Instructions
+### Model Limitations
+- Potential bias from class imbalance in the dataset
+- Some features showed limited predictive power due to equal distribution across churn categories
+
+## Business Recommendations
+
+1. **Enhanced Contract Plans**: Develop comprehensive contract options with attractive add-on services for data and voice customers
+2. **Targeted Marketing**: Conduct campaigns focused on senior citizens and customers identified as high-churn risk
+3. **Early Intervention**: Implement retention programs for customers in their first 40 days
+4. **Service Bundling**: Promote device protection, online backup, and tech support packages
+
+## Live Dashboard
+
+Access the interactive dashboard: [Customer Churn Dashboard](http://dashapp-env-v7-env.eba-m32nwi36.us-east-1.elasticbeanstalk.com)
+
+## Project Structure
+
+```
+Customer_Churn_Analysis/
+|
++-- Prediction_Data/          # Data files
+|   +-- dataset.csv           # Original dataset
+|   +-- final_data.csv/       # Processed data
+|   +-- recommendation.csv    # Churn predictions
+|
++-- Scripts/                  # Source code
+|   +-- CC_analysis.py        # EDA and Decision Tree modeling
+|   +-- AutoML_Prediction.py  # H2O AutoML modeling
+|   +-- Recommendation.py     # Generate churn recommendations
+|
++-- Models/                   # Trained models
+|   +-- decision_tree_model/
+|   +-- model_h2o_stacked_ensemble
+|
++-- Results/                  # Outputs and reports
++-- app.py                    # Dash web application
++-- requirements.txt          # Dependencies
++-- Dockerfile                # Container configuration
+```
+
+## Installation
 
 ### Prerequisites
 - Python 3.9+
 - Docker (optional, for containerized deployment)
 
 ### Setup
+
 1. Clone the repository:
-   ```
+   ```bash
    git clone https://github.com/EllaN12/Customer_Churn_Analysis.git
-   cd Customer_Churn_analysis
+   cd Customer_Churn_Analysis
    ```
 
 2. Create a virtual environment:
-   ```
+   ```bash
    python -m venv venv
-   source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
+   source venv/bin/activate  # Windows: venv\Scripts\activate
    ```
 
 3. Install dependencies:
-   ```
+   ```bash
    pip install -r requirements.txt
    ```
 
-## Usage Instructions
+## Usage
 
-1. Start the Dash application:
-   ```
-   python app.py
-   ```
- or visit http://dashapp-env-v7-env.eba-m32nwi36.us-east-1.elasticbeanstalk.com
-
-
-## Project Structure
-```
-project/
-│
-├── prediction_data/               # Data files
-├── src/               # Source code
-├── models/            # Trained models
-├── results/           # Figures, tables, etc.
-├── requirements.txt   # Dependencies
-└── README.md
+Start the Dash application locally:
+```bash
+python app.py
 ```
 
-### Key Components
-- **Analysis.py implements** Exploratory Data Aanalysis and decision Tree Classifier modeling and evaluation
-- **AutoML_Prediction.py**  predictive modeling using H20 AutoML 
-- **recommendation.py** list of customers who are more likely than not to churn.
-
-
+Or visit the deployed dashboard: [Live Demo](http://dashapp-env-v7-env.eba-m32nwi36.us-east-1.elasticbeanstalk.com)
 
 ## Acknowledgments
-- Dash for the web framework
-- SparkML for machine learning lifecycle management
-- SparkSQL, Pandas and NumPy for data manipulation 
-- Matplotlib for data visualization
-- Scikit-learn for machine learning utilities
-- H20 AutoML and Decition Tree Classifier for modeling
 
-
+- **Dash** - Web framework for interactive dashboards
+- **PySpark & Spark ML** - Distributed data processing and ML
+- **H2O AutoML** - Automated machine learning
+- **Scikit-learn** - ML utilities and evaluation metrics
+- **MLflow** - Experiment tracking
