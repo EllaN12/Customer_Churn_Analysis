@@ -1,0 +1,179 @@
+================================================================================
+BAYESIAN ANALYSIS ENGINE - COMPLETE TEST SUITE
+================================================================================
+
+================================================================================
+TEST 1: INITIALIZATION
+================================================================================
+✓ Bayesian Analysis Engine initialized
+  Random seed: 42
+  Results directory: /Users/ellandalla/Documents/GitHub/Customer_Churn_Analysis/venv/Results
+  Visualizations: /Users/ellandalla/Documents/GitHub/Customer_Churn_Analysis/venv/Results/visualizations
+✓ Test 1 passed: Initialization
+
+================================================================================
+TEST 2: DATA LOADING
+================================================================================
+
+================================================================================
+LOADING DATA
+================================================================================
+✓ Loaded from DataFrame
+  Sampled 50% of data
+  Shape: (500, 9)
+  Rows: 500
+
+  Churn rate: 32.2%
+  Add-on adoption: 91.8%
+✓ Test 2 passed: Data loading
+
+================================================================================
+TEST 3: MODEL SPECIFICATION
+================================================================================
+
+================================================================================
+SPECIFYING MODEL: PROPER_CAUSAL
+================================================================================
+
+✓ Using PROPER CAUSAL MODEL
+  Controls: Age, Dependents, Partner (exogenous only)
+
+✓ Model specified: 5 parameters
+✓ Test 3 passed: Model specification
+
+================================================================================
+TEST 4: MODEL FITTING
+================================================================================
+
+================================================================================
+FITTING MODEL VIA MCMC
+================================================================================
+
+Sampling parameters:
+  Draws: 500
+  Tune: 500
+  Chains: 2
+  Target accept: 0.95
+                                                                                                                        
+  Progress                        Draws   Divergences   Step size   Grad evals   Sampling Speed    Elapsed   Remaining  
+ ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── 
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━   999     0             0.478       7            831.69 drawss/s   0:00:01   0:00:00    
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━   999     0             0.607       7            855.26 drawss/s   0:00:01   0:00:00    
+                                                                                                                        
+
+✓ Sampling complete
+
+============================================================
+CONVERGENCE CHECK
+============================================================
+
+R-hat (Gelman-Rubin):
+  Maximum R-hat: 1.0038
+  ✓ Excellent convergence (R-hat < 1.01)
+
+Effective Sample Size:
+  Minimum ESS: 1293
+  ✓ Good ESS (>400)
+✓ Test 4 passed: Model fitting
+
+================================================================================
+TEST 5: CONVERGENCE DIAGNOSTICS
+================================================================================
+
+================================================================================
+DETAILED CONVERGENCE DIAGNOSTICS
+================================================================================
+
+R-hat statistics:
+  alpha: 0.9999
+  beta_addon: 1.0001
+  beta_senior: 0.9999
+  beta_dependents: 1.0038
+  beta_partner: 0.9998
+
+Effective Sample Size:
+  alpha: 1395
+  beta_addon: 1361
+  beta_senior: 1293
+  beta_dependents: 1566
+  beta_partner: 1300
+
+Monte Carlo Standard Error:
+  alpha: 0.0025
+  beta_addon: 0.0027
+  beta_senior: 0.0026
+  beta_dependents: 0.0024
+  beta_partner: 0.0027
+
+✓ Saved: /Users/ellandalla/Documents/GitHub/Customer_Churn_Analysis/venv/Results/visualizations/trace_plots.png
+✓ Saved: /Users/ellandalla/Documents/GitHub/Customer_Churn_Analysis/venv/Results/visualizations/posterior_plots.png
+✓ Test 5 passed: Convergence diagnostics
+
+================================================================================
+TEST 6: RESULTS ANALYSIS
+================================================================================
+
+================================================================================
+POSTERIOR ANALYSIS
+================================================================================
+
+Posterior Summary:
+                  mean     sd  hdi_2.5%  hdi_97.5%  mcse_mean  mcse_sd  ess_bulk  ess_tail  r_hat
+alpha           -0.755  0.093    -0.930     -0.561      0.002    0.003    1395.0     776.0    1.0
+beta_addon       0.075  0.099    -0.111      0.268      0.003    0.003    1361.0     830.0    1.0
+beta_senior     -0.084  0.092    -0.276      0.090      0.003    0.003    1293.0     679.0    1.0
+beta_dependents  0.043  0.096    -0.126      0.241      0.002    0.003    1566.0     679.0    1.0
+beta_partner    -0.082  0.099    -0.281      0.109      0.003    0.003    1300.0     701.0    1.0
+
+============================================================
+ADD-ON CAUSAL EFFECT ANALYSIS
+============================================================
+
+Effect on churn (logit scale):
+  Mean: 0.0751
+  95% HDI: [-0.1114, 0.2677]
+
+Probability statements:
+  P(Add-ons reduce churn): 23.3%
+  P(Effect > 10% reduction): 3.7%
+
+⚠️ Weak evidence: Effect unclear
+✓ Test 6 passed: Results analysis
+
+================================================================================
+TEST 7: POSTERIOR PREDICTIVE CHECK
+================================================================================
+
+================================================================================
+POSTERIOR PREDICTIVE CHECK
+================================================================================
+Sampling ... ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00 / 0:00:00
+
+Observed churn rate: 32.2%
+Predicted churn rate: 32.2%
+
+✓ Saved: /Users/ellandalla/Documents/GitHub/Customer_Churn_Analysis/venv/Results/visualizations/posterior_predictive_check.png
+✓ Test 7 passed: Posterior predictive check
+
+================================================================================
+TEST 8: REPORT GENERATION
+================================================================================
+
+================================================================================
+GENERATING REPORT
+================================================================================
+
+✓ Report saved: /Users/ellandalla/Documents/GitHub/Customer_Churn_Analysis/venv/Results/reports/bayesian_analysis_report.txt
+✓ Test 8 passed: Report generation
+
+================================================================================
+✅ ALL TESTS PASSED
+================================================================================
+
+Generated outputs:
+  ✓ /Users/ellandalla/Documents/GitHub/Customer_Churn_Analysis/venv/Results/visualizations/trace_plots.png
+  ✓ /Users/ellandalla/Documents/GitHub/Customer_Churn_Analysis/venv/Results/visualizations/posterior_plots.png
+  ✓ /Users/ellandalla/Documents/GitHub/Customer_Churn_Analysis/venv/Results/visualizations/posterior_predictive_check.png
+  ✓ /Users/ellandalla/Documents/GitHub/Customer_Churn_Analysis/venv/Results/reports/bayesian_analysis_report.txt
+
+Bayesian Analysis Engine: FULLY TESTED ✅

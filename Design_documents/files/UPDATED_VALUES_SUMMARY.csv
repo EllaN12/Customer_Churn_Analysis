@@ -1,0 +1,11 @@
+Metric,OLD Value,NEW Value,Change,Percent Change
+Total Customers,1521,7042,+5521,+363%
+Total Churners,1087,1869,+782,+72%
+Churn Rate,71.5%,26.5%,-45pp,-63%
+Avg Monthly Revenue,$78.76,$74.44,-$4.32,-5%
+Monthly Revenue at Risk,"$119,908","$139,131","+$19,223",+16%
+Annual Churn Loss,$1.03M,$1.67M,+$640K,+62%
+LTV Loss (11 mo),$942K,$1.53M,+$588K,+62%
+Month-to-Month %,99.9%,88.5%,-11.4pp,-11%
+Electronic Check %,73.2%,57.3%,-15.9pp,-22%
+Average Tenure,N/A,18.0 months,N/A,N/A

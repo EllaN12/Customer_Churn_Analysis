@@ -1,0 +1,391 @@
+================================================================================
+RANDOMIZATION SYSTEM DEMONSTRATION
+================================================================================
+
+============================================================
+EXPERIMENT 1: EARLY TENURE INTERVENTION
+============================================================
+✓ Initialized randomizer for 'early_tenure_v1'
+  - Arms: 4
+  - Block size: 8
+  - Strata: ['internet_service', 'contract_type']
+Customer CUST_0001 assigned to: T1: Welcome Call (Day 7)
+Customer CUST_0002 assigned to: Control (Standard onboarding)
+Customer CUST_0003 assigned to: Control (Standard onboarding)
+Customer CUST_0004 assigned to: T1: Welcome Call (Day 7)
+Customer CUST_0005 assigned to: T3: Concierge (Days 7, 14, 30 touchpoints)
+Customer CUST_0006 assigned to: T2: Smart Start (Day 14 contract offer)
+Customer CUST_0007 assigned to: Control (Standard onboarding)
+Customer CUST_0008 assigned to: T3: Concierge (Days 7, 14, 30 touchpoints)
+Customer CUST_0009 assigned to: Control (Standard onboarding)
+Customer CUST_0010 assigned to: T2: Smart Start (Day 14 contract offer)
+Customer CUST_0011 assigned to: Control (Standard onboarding)
+Customer CUST_0012 assigned to: T3: Concierge (Days 7, 14, 30 touchpoints)
+Customer CUST_0013 assigned to: Control (Standard onboarding)
+Customer CUST_0014 assigned to: T2: Smart Start (Day 14 contract offer)
+Customer CUST_0015 assigned to: T1: Welcome Call (Day 7)
+Customer CUST_0016 assigned to: T2: Smart Start (Day 14 contract offer)
+Customer CUST_0017 assigned to: T1: Welcome Call (Day 7)
+Customer CUST_0018 assigned to: T1: Welcome Call (Day 7)
+Customer CUST_0019 assigned to: Control (Standard onboarding)
+Customer CUST_0020 assigned to: T3: Concierge (Days 7, 14, 30 touchpoints)
+Customer CUST_0021 assigned to: Control (Standard onboarding)
+Customer CUST_0022 assigned to: T3: Concierge (Days 7, 14, 30 touchpoints)
+Customer CUST_0023 assigned to: T2: Smart Start (Day 14 contract offer)
+Customer CUST_0024 assigned to: T3: Concierge (Days 7, 14, 30 touchpoints)
+Customer CUST_0025 assigned to: T1: Welcome Call (Day 7)
+Customer CUST_0026 assigned to: T1: Welcome Call (Day 7)
+Customer CUST_0027 assigned to: T3: Concierge (Days 7, 14, 30 touchpoints)
+Customer CUST_0028 assigned to: T2: Smart Start (Day 14 contract offer)
+Customer CUST_0029 assigned to: T2: Smart Start (Day 14 contract offer)
+Customer CUST_0030 assigned to: T1: Welcome Call (Day 7)
+Customer CUST_0031 assigned to: T1: Welcome Call (Day 7)
+Customer CUST_0032 assigned to: T2: Smart Start (Day 14 contract offer)
+Customer CUST_0033 assigned to: Control (Standard onboarding)
+Customer CUST_0034 assigned to: Control (Standard onboarding)
+Customer CUST_0035 assigned to: T3: Concierge (Days 7, 14, 30 touchpoints)
+Customer CUST_0036 assigned to: T1: Welcome Call (Day 7)
+Customer CUST_0037 assigned to: T2: Smart Start (Day 14 contract offer)
+Customer CUST_0038 assigned to: Control (Standard onboarding)
+Customer CUST_0039 assigned to: T3: Concierge (Days 7, 14, 30 touchpoints)
+Customer CUST_0040 assigned to: T1: Welcome Call (Day 7)
+Customer CUST_0041 assigned to: Control (Standard onboarding)
+Customer CUST_0042 assigned to: T2: Smart Start (Day 14 contract offer)
+Customer CUST_0043 assigned to: T2: Smart Start (Day 14 contract offer)
+Customer CUST_0044 assigned to: T1: Welcome Call (Day 7)
+Customer CUST_0045 assigned to: T2: Smart Start (Day 14 contract offer)
+Customer CUST_0046 assigned to: T1: Welcome Call (Day 7)
+Customer CUST_0047 assigned to: T3: Concierge (Days 7, 14, 30 touchpoints)
+Customer CUST_0048 assigned to: Control (Standard onboarding)
+Customer CUST_0049 assigned to: T2: Smart Start (Day 14 contract offer)
+Customer CUST_0050 assigned to: T1: Welcome Call (Day 7)
+Customer CUST_0051 assigned to: T2: Smart Start (Day 14 contract offer)
+Customer CUST_0052 assigned to: T1: Welcome Call (Day 7)
+Customer CUST_0053 assigned to: Control (Standard onboarding)
+Customer CUST_0054 assigned to: T3: Concierge (Days 7, 14, 30 touchpoints)
+Customer CUST_0055 assigned to: T3: Concierge (Days 7, 14, 30 touchpoints)
+Customer CUST_0056 assigned to: T2: Smart Start (Day 14 contract offer)
+Customer CUST_0057 assigned to: Control (Standard onboarding)
+Customer CUST_0058 assigned to: T3: Concierge (Days 7, 14, 30 touchpoints)
+Customer CUST_0059 assigned to: T3: Concierge (Days 7, 14, 30 touchpoints)
+Customer CUST_0060 assigned to: T3: Concierge (Days 7, 14, 30 touchpoints)
+Customer CUST_0061 assigned to: T3: Concierge (Days 7, 14, 30 touchpoints)
+Customer CUST_0062 assigned to: T3: Concierge (Days 7, 14, 30 touchpoints)
+Customer CUST_0063 assigned to: T1: Welcome Call (Day 7)
+Customer CUST_0064 assigned to: T2: Smart Start (Day 14 contract offer)
+Customer CUST_0065 assigned to: T3: Concierge (Days 7, 14, 30 touchpoints)
+Customer CUST_0066 assigned to: Control (Standard onboarding)
+Customer CUST_0067 assigned to: T1: Welcome Call (Day 7)
+Customer CUST_0068 assigned to: Control (Standard onboarding)
+Customer CUST_0069 assigned to: T1: Welcome Call (Day 7)
+Customer CUST_0070 assigned to: T3: Concierge (Days 7, 14, 30 touchpoints)
+Customer CUST_0071 assigned to: T2: Smart Start (Day 14 contract offer)
+Customer CUST_0072 assigned to: T2: Smart Start (Day 14 contract offer)
+Customer CUST_0073 assigned to: T1: Welcome Call (Day 7)
+Customer CUST_0074 assigned to: T1: Welcome Call (Day 7)
+Customer CUST_0075 assigned to: T2: Smart Start (Day 14 contract offer)
+Customer CUST_0076 assigned to: Control (Standard onboarding)
+Customer CUST_0077 assigned to: T3: Concierge (Days 7, 14, 30 touchpoints)
+Customer CUST_0078 assigned to: Control (Standard onboarding)
+Customer CUST_0079 assigned to: T2: Smart Start (Day 14 contract offer)
+Customer CUST_0080 assigned to: Control (Standard onboarding)
+Customer CUST_0081 assigned to: T3: Concierge (Days 7, 14, 30 touchpoints)
+Customer CUST_0082 assigned to: T2: Smart Start (Day 14 contract offer)
+Customer CUST_0083 assigned to: T2: Smart Start (Day 14 contract offer)
+Customer CUST_0084 assigned to: T2: Smart Start (Day 14 contract offer)
+Customer CUST_0085 assigned to: T3: Concierge (Days 7, 14, 30 touchpoints)
+Customer CUST_0086 assigned to: Control (Standard onboarding)
+Customer CUST_0087 assigned to: T2: Smart Start (Day 14 contract offer)
+Customer CUST_0088 assigned to: T1: Welcome Call (Day 7)
+Customer CUST_0089 assigned to: T2: Smart Start (Day 14 contract offer)
+Customer CUST_0090 assigned to: Control (Standard onboarding)
+Customer CUST_0091 assigned to: Control (Standard onboarding)
+Customer CUST_0092 assigned to: T1: Welcome Call (Day 7)
+Customer CUST_0093 assigned to: Control (Standard onboarding)
+Customer CUST_0094 assigned to: Control (Standard onboarding)
+Customer CUST_0095 assigned to: T1: Welcome Call (Day 7)
+Customer CUST_0096 assigned to: T3: Concierge (Days 7, 14, 30 touchpoints)
+Customer CUST_0097 assigned to: T2: Smart Start (Day 14 contract offer)
+Customer CUST_0098 assigned to: T3: Concierge (Days 7, 14, 30 touchpoints)
+Customer CUST_0099 assigned to: T3: Concierge (Days 7, 14, 30 touchpoints)
+Customer CUST_0100 assigned to: T1: Welcome Call (Day 7)
+
+============================================================
+BALANCE CHECK
+============================================================
+
+Overall assignment distribution:
+assignment
+0    25
+1    24
+2    26
+3    25
+Name: count, dtype: int64
+
+Chi-square test for overall balance:
+  χ² = 0.080, p = 0.9941
+  ✓ Good balance across arms
+
+Balance within strata:
+
+  Stratum 'Fiber_Contract':
+  {0: 6, 1: 7, 2: 7, 3: 6}
+
+  Stratum 'Fiber_MTM':
+  {0: 7, 1: 6, 2: 8, 3: 7}
+
+  Stratum 'DSL_Contract':
+  {0: 6, 1: 4, 2: 5, 3: 5}
+
+  Stratum 'DSL_MTM':
+  {0: 6, 1: 7, 2: 6, 3: 7}
+
+✓ Exported 100 assignments to /Users/ellandalla/Documents/GitHub/Customer_Churn_Analysis/venv/Results/logs/assignments_early_tenure_v1.csv
+
+============================================================
+EXPERIMENT 2: FACTORIAL DESIGN
+============================================================
+✓ Initialized randomizer for 'factorial_v1'
+  - Arms: 8
+  - Block size: 16
+  - Strata: ['tenure_group', 'revenue_tier']
+Customer MTM_0001 assigned to: Month-to-month + Current payment + No add-on offer
+Customer MTM_0002 assigned to: Month-to-month + Autopay incentive + Add-on bundle
+Customer MTM_0003 assigned to: 1-year contract + Autopay incentive + No add-on offer
+Customer MTM_0004 assigned to: 1-year contract + Current payment + Add-on bundle
+Customer MTM_0005 assigned to: Month-to-month + Autopay incentive + No add-on offer
+Customer MTM_0006 assigned to: Month-to-month + Autopay incentive + Add-on bundle
+Customer MTM_0007 assigned to: 1-year contract + Current payment + Add-on bundle
+Customer MTM_0008 assigned to: 1-year contract + Current payment + Add-on bundle
+Customer MTM_0009 assigned to: Month-to-month + Autopay incentive + No add-on offer
+Customer MTM_0010 assigned to: 1-year contract + Current payment + No add-on offer
+Customer MTM_0011 assigned to: Month-to-month + Autopay incentive + No add-on offer
+Customer MTM_0012 assigned to: Month-to-month + Current payment + No add-on offer
+Customer MTM_0013 assigned to: 1-year contract + Current payment + No add-on offer
+Customer MTM_0014 assigned to: Month-to-month + Autopay incentive + Add-on bundle
+Customer MTM_0015 assigned to: 1-year contract + Autopay incentive + Add-on bundle
+Customer MTM_0016 assigned to: Month-to-month + Current payment + No add-on offer
+Customer MTM_0017 assigned to: Month-to-month + Autopay incentive + No add-on offer
+Customer MTM_0018 assigned to: 1-year contract + Autopay incentive + No add-on offer
+Customer MTM_0019 assigned to: 1-year contract + Current payment + Add-on bundle
+Customer MTM_0020 assigned to: 1-year contract + Current payment + No add-on offer
+Customer MTM_0021 assigned to: Month-to-month + Current payment + No add-on offer
+Customer MTM_0022 assigned to: 1-year contract + Autopay incentive + Add-on bundle
+Customer MTM_0023 assigned to: 1-year contract + Autopay incentive + No add-on offer
+Customer MTM_0024 assigned to: Month-to-month + Autopay incentive + Add-on bundle
+Customer MTM_0025 assigned to: Month-to-month + Current payment + Add-on bundle
+Customer MTM_0026 assigned to: Month-to-month + Current payment + Add-on bundle
+Customer MTM_0027 assigned to: Month-to-month + Current payment + Add-on bundle
+Customer MTM_0028 assigned to: 1-year contract + Current payment + No add-on offer
+Customer MTM_0029 assigned to: 1-year contract + Autopay incentive + Add-on bundle
+Customer MTM_0030 assigned to: 1-year contract + Autopay incentive + Add-on bundle
+Customer MTM_0031 assigned to: Month-to-month + Autopay incentive + No add-on offer
+Customer MTM_0032 assigned to: 1-year contract + Current payment + Add-on bundle
+Customer MTM_0033 assigned to: 1-year contract + Autopay incentive + No add-on offer
+Customer MTM_0034 assigned to: 1-year contract + Current payment + Add-on bundle
+Customer MTM_0035 assigned to: 1-year contract + Current payment + No add-on offer
+Customer MTM_0036 assigned to: 1-year contract + Autopay incentive + No add-on offer
+Customer MTM_0037 assigned to: 1-year contract + Current payment + Add-on bundle
+Customer MTM_0038 assigned to: 1-year contract + Current payment + Add-on bundle
+Customer MTM_0039 assigned to: Month-to-month + Autopay incentive + No add-on offer
+Customer MTM_0040 assigned to: Month-to-month + Current payment + No add-on offer
+Customer MTM_0041 assigned to: Month-to-month + Current payment + Add-on bundle
+Customer MTM_0042 assigned to: Month-to-month + Current payment + No add-on offer
+Customer MTM_0043 assigned to: 1-year contract + Autopay incentive + No add-on offer
+Customer MTM_0044 assigned to: 1-year contract + Autopay incentive + No add-on offer
+Customer MTM_0045 assigned to: Month-to-month + Autopay incentive + No add-on offer
+Customer MTM_0046 assigned to: 1-year contract + Autopay incentive + Add-on bundle
+Customer MTM_0047 assigned to: Month-to-month + Current payment + Add-on bundle
+Customer MTM_0048 assigned to: Month-to-month + Current payment + No add-on offer
+Customer MTM_0049 assigned to: Month-to-month + Autopay incentive + Add-on bundle
+Customer MTM_0050 assigned to: 1-year contract + Current payment + No add-on offer
+Customer MTM_0051 assigned to: 1-year contract + Autopay incentive + Add-on bundle
+Customer MTM_0052 assigned to: Month-to-month + Autopay incentive + Add-on bundle
+Customer MTM_0053 assigned to: 1-year contract + Autopay incentive + No add-on offer
+Customer MTM_0054 assigned to: Month-to-month + Current payment + Add-on bundle
+Customer MTM_0055 assigned to: Month-to-month + Autopay incentive + No add-on offer
+Customer MTM_0056 assigned to: 1-year contract + Current payment + Add-on bundle
+Customer MTM_0057 assigned to: 1-year contract + Current payment + No add-on offer
+Customer MTM_0058 assigned to: 1-year contract + Autopay incentive + Add-on bundle
+Customer MTM_0059 assigned to: 1-year contract + Autopay incentive + Add-on bundle
+Customer MTM_0060 assigned to: Month-to-month + Autopay incentive + No add-on offer
+Customer MTM_0061 assigned to: Month-to-month + Current payment + Add-on bundle
+Customer MTM_0062 assigned to: Month-to-month + Autopay incentive + Add-on bundle
+Customer MTM_0063 assigned to: Month-to-month + Current payment + No add-on offer
+Customer MTM_0064 assigned to: 1-year contract + Current payment + No add-on offer
+Customer MTM_0065 assigned to: Month-to-month + Current payment + No add-on offer
+Customer MTM_0066 assigned to: Month-to-month + Autopay incentive + Add-on bundle
+Customer MTM_0067 assigned to: 1-year contract + Current payment + Add-on bundle
+Customer MTM_0068 assigned to: 1-year contract + Autopay incentive + No add-on offer
+Customer MTM_0069 assigned to: 1-year contract + Current payment + Add-on bundle
+Customer MTM_0070 assigned to: Month-to-month + Current payment + Add-on bundle
+Customer MTM_0071 assigned to: 1-year contract + Current payment + No add-on offer
+Customer MTM_0072 assigned to: 1-year contract + Autopay incentive + Add-on bundle
+Customer MTM_0073 assigned to: Month-to-month + Current payment + No add-on offer
+Customer MTM_0074 assigned to: Month-to-month + Autopay incentive + Add-on bundle
+Customer MTM_0075 assigned to: Month-to-month + Current payment + Add-on bundle
+Customer MTM_0076 assigned to: 1-year contract + Autopay incentive + Add-on bundle
+Customer MTM_0077 assigned to: 1-year contract + Autopay incentive + Add-on bundle
+Customer MTM_0078 assigned to: 1-year contract + Current payment + Add-on bundle
+Customer MTM_0079 assigned to: 1-year contract + Current payment + No add-on offer
+Customer MTM_0080 assigned to: Month-to-month + Current payment + No add-on offer
+Customer MTM_0081 assigned to: Month-to-month + Current payment + Add-on bundle
+Customer MTM_0082 assigned to: Month-to-month + Autopay incentive + Add-on bundle
+Customer MTM_0083 assigned to: 1-year contract + Autopay incentive + Add-on bundle
+Customer MTM_0084 assigned to: Month-to-month + Autopay incentive + Add-on bundle
+Customer MTM_0085 assigned to: 1-year contract + Autopay incentive + No add-on offer
+Customer MTM_0086 assigned to: 1-year contract + Current payment + No add-on offer
+Customer MTM_0087 assigned to: 1-year contract + Autopay incentive + No add-on offer
+Customer MTM_0088 assigned to: Month-to-month + Autopay incentive + No add-on offer
+Customer MTM_0089 assigned to: 1-year contract + Current payment + No add-on offer
+Customer MTM_0090 assigned to: 1-year contract + Current payment + No add-on offer
+Customer MTM_0091 assigned to: Month-to-month + Autopay incentive + No add-on offer
+Customer MTM_0092 assigned to: 1-year contract + Current payment + Add-on bundle
+Customer MTM_0093 assigned to: Month-to-month + Current payment + No add-on offer
+Customer MTM_0094 assigned to: Month-to-month + Autopay incentive + Add-on bundle
+Customer MTM_0095 assigned to: 1-year contract + Autopay incentive + No add-on offer
+Customer MTM_0096 assigned to: Month-to-month + Current payment + Add-on bundle
+Customer MTM_0097 assigned to: Month-to-month + Autopay incentive + No add-on offer
+Customer MTM_0098 assigned to: Month-to-month + Autopay incentive + Add-on bundle
+Customer MTM_0099 assigned to: 1-year contract + Autopay incentive + No add-on offer
+Customer MTM_0100 assigned to: 1-year contract + Current payment + Add-on bundle
+Customer MTM_0101 assigned to: 1-year contract + Current payment + No add-on offer
+Customer MTM_0102 assigned to: Month-to-month + Autopay incentive + No add-on offer
+Customer MTM_0103 assigned to: 1-year contract + Autopay incentive + Add-on bundle
+Customer MTM_0104 assigned to: 1-year contract + Autopay incentive + Add-on bundle
+Customer MTM_0105 assigned to: 1-year contract + Current payment + No add-on offer
+Customer MTM_0106 assigned to: Month-to-month + Current payment + No add-on offer
+Customer MTM_0107 assigned to: Month-to-month + Autopay incentive + No add-on offer
+Customer MTM_0108 assigned to: Month-to-month + Current payment + Add-on bundle
+Customer MTM_0109 assigned to: 1-year contract + Current payment + Add-on bundle
+Customer MTM_0110 assigned to: 1-year contract + Current payment + Add-on bundle
+Customer MTM_0111 assigned to: Month-to-month + Current payment + No add-on offer
+Customer MTM_0112 assigned to: Month-to-month + Current payment + No add-on offer
+Customer MTM_0113 assigned to: 1-year contract + Autopay incentive + No add-on offer
+Customer MTM_0114 assigned to: Month-to-month + Autopay incentive + No add-on offer
+Customer MTM_0115 assigned to: Month-to-month + Autopay incentive + No add-on offer
+Customer MTM_0116 assigned to: 1-year contract + Current payment + No add-on offer
+Customer MTM_0117 assigned to: Month-to-month + Current payment + Add-on bundle
+Customer MTM_0118 assigned to: Month-to-month + Current payment + No add-on offer
+Customer MTM_0119 assigned to: Month-to-month + Autopay incentive + Add-on bundle
+Customer MTM_0120 assigned to: 1-year contract + Current payment + No add-on offer
+Customer MTM_0121 assigned to: Month-to-month + Current payment + Add-on bundle
+Customer MTM_0122 assigned to: 1-year contract + Autopay incentive + Add-on bundle
+Customer MTM_0123 assigned to: Month-to-month + Current payment + Add-on bundle
+Customer MTM_0124 assigned to: 1-year contract + Current payment + Add-on bundle
+Customer MTM_0125 assigned to: 1-year contract + Autopay incentive + Add-on bundle
+Customer MTM_0126 assigned to: Month-to-month + Current payment + Add-on bundle
+Customer MTM_0127 assigned to: Month-to-month + Current payment + No add-on offer
+Customer MTM_0128 assigned to: 1-year contract + Autopay incentive + Add-on bundle
+Customer MTM_0129 assigned to: Month-to-month + Autopay incentive + Add-on bundle
+Customer MTM_0130 assigned to: Month-to-month + Current payment + Add-on bundle
+Customer MTM_0131 assigned to: Month-to-month + Autopay incentive + No add-on offer
+Customer MTM_0132 assigned to: 1-year contract + Current payment + No add-on offer
+Customer MTM_0133 assigned to: 1-year contract + Autopay incentive + No add-on offer
+Customer MTM_0134 assigned to: Month-to-month + Current payment + No add-on offer
+Customer MTM_0135 assigned to: 1-year contract + Autopay incentive + Add-on bundle
+Customer MTM_0136 assigned to: 1-year contract + Autopay incentive + No add-on offer
+Customer MTM_0137 assigned to: 1-year contract + Current payment + Add-on bundle
+Customer MTM_0138 assigned to: 1-year contract + Current payment + No add-on offer
+Customer MTM_0139 assigned to: 1-year contract + Autopay incentive + No add-on offer
+Customer MTM_0140 assigned to: Month-to-month + Current payment + Add-on bundle
+Customer MTM_0141 assigned to: 1-year contract + Current payment + No add-on offer
+Customer MTM_0142 assigned to: Month-to-month + Autopay incentive + Add-on bundle
+Customer MTM_0143 assigned to: 1-year contract + Autopay incentive + No add-on offer
+Customer MTM_0144 assigned to: 1-year contract + Autopay incentive + No add-on offer
+Customer MTM_0145 assigned to: 1-year contract + Current payment + No add-on offer
+Customer MTM_0146 assigned to: 1-year contract + Current payment + Add-on bundle
+Customer MTM_0147 assigned to: Month-to-month + Autopay incentive + Add-on bundle
+Customer MTM_0148 assigned to: Month-to-month + Autopay incentive + Add-on bundle
+Customer MTM_0149 assigned to: 1-year contract + Autopay incentive + No add-on offer
+Customer MTM_0150 assigned to: Month-to-month + Autopay incentive + No add-on offer
+Customer MTM_0151 assigned to: Month-to-month + Current payment + Add-on bundle
+Customer MTM_0152 assigned to: 1-year contract + Current payment + No add-on offer
+Customer MTM_0153 assigned to: 1-year contract + Autopay incentive + Add-on bundle
+Customer MTM_0154 assigned to: Month-to-month + Autopay incentive + No add-on offer
+Customer MTM_0155 assigned to: 1-year contract + Autopay incentive + No add-on offer
+Customer MTM_0156 assigned to: 1-year contract + Current payment + Add-on bundle
+Customer MTM_0157 assigned to: Month-to-month + Autopay incentive + Add-on bundle
+Customer MTM_0158 assigned to: 1-year contract + Autopay incentive + No add-on offer
+Customer MTM_0159 assigned to: Month-to-month + Current payment + No add-on offer
+Customer MTM_0160 assigned to: Month-to-month + Autopay incentive + Add-on bundle
+Customer MTM_0161 assigned to: Month-to-month + Autopay incentive + Add-on bundle
+Customer MTM_0162 assigned to: 1-year contract + Autopay incentive + Add-on bundle
+Customer MTM_0163 assigned to: Month-to-month + Autopay incentive + Add-on bundle
+Customer MTM_0164 assigned to: 1-year contract + Autopay incentive + Add-on bundle
+Customer MTM_0165 assigned to: Month-to-month + Current payment + No add-on offer
+Customer MTM_0166 assigned to: Month-to-month + Current payment + No add-on offer
+Customer MTM_0167 assigned to: 1-year contract + Current payment + No add-on offer
+Customer MTM_0168 assigned to: Month-to-month + Current payment + Add-on bundle
+Customer MTM_0169 assigned to: Month-to-month + Current payment + No add-on offer
+Customer MTM_0170 assigned to: 1-year contract + Autopay incentive + Add-on bundle
+Customer MTM_0171 assigned to: 1-year contract + Current payment + Add-on bundle
+Customer MTM_0172 assigned to: 1-year contract + Current payment + Add-on bundle
+Customer MTM_0173 assigned to: 1-year contract + Autopay incentive + No add-on offer
+Customer MTM_0174 assigned to: Month-to-month + Autopay incentive + Add-on bundle
+Customer MTM_0175 assigned to: Month-to-month + Autopay incentive + No add-on offer
+Customer MTM_0176 assigned to: 1-year contract + Autopay incentive + Add-on bundle
+Customer MTM_0177 assigned to: Month-to-month + Autopay incentive + Add-on bundle
+Customer MTM_0178 assigned to: Month-to-month + Current payment + Add-on bundle
+Customer MTM_0179 assigned to: 1-year contract + Autopay incentive + Add-on bundle
+Customer MTM_0180 assigned to: 1-year contract + Autopay incentive + No add-on offer
+Customer MTM_0181 assigned to: Month-to-month + Autopay incentive + No add-on offer
+Customer MTM_0182 assigned to: Month-to-month + Current payment + Add-on bundle
+Customer MTM_0183 assigned to: 1-year contract + Current payment + Add-on bundle
+Customer MTM_0184 assigned to: 1-year contract + Current payment + Add-on bundle
+Customer MTM_0185 assigned to: 1-year contract + Autopay incentive + Add-on bundle
+Customer MTM_0186 assigned to: Month-to-month + Autopay incentive + No add-on offer
+Customer MTM_0187 assigned to: Month-to-month + Current payment + Add-on bundle
+Customer MTM_0188 assigned to: Month-to-month + Current payment + No add-on offer
+Customer MTM_0189 assigned to: Month-to-month + Autopay incentive + No add-on offer
+Customer MTM_0190 assigned to: Month-to-month + Autopay incentive + Add-on bundle
+Customer MTM_0191 assigned to: Month-to-month + Current payment + Add-on bundle
+Customer MTM_0192 assigned to: Month-to-month + Autopay incentive + No add-on offer
+Customer MTM_0193 assigned to: Month-to-month + Current payment + Add-on bundle
+Customer MTM_0194 assigned to: Month-to-month + Autopay incentive + No add-on offer
+Customer MTM_0195 assigned to: 1-year contract + Autopay incentive + Add-on bundle
+Customer MTM_0196 assigned to: Month-to-month + Autopay incentive + Add-on bundle
+Customer MTM_0197 assigned to: 1-year contract + Current payment + Add-on bundle
+Customer MTM_0198 assigned to: Month-to-month + Current payment + Add-on bundle
+Customer MTM_0199 assigned to: Month-to-month + Autopay incentive + No add-on offer
+Customer MTM_0200 assigned to: Month-to-month + Current payment + No add-on offer
+
+============================================================
+BALANCE CHECK
+============================================================
+
+Overall assignment distribution:
+assignment
+0    24
+1    26
+2    26
+3    26
+4    23
+5    25
+6    24
+7    26
+Name: count, dtype: int64
+
+Chi-square test for overall balance:
+  χ² = 0.400, p = 0.9997
+  ✓ Good balance across arms
+
+Balance within strata:
+
+  Stratum 'established_high':
+  {0: 12, 1: 14, 2: 14, 3: 14, 4: 12, 5: 12, 6: 12, 7: 14}
+
+  Stratum 'early_high':
+  {0: 4, 1: 4, 2: 5, 3: 4, 4: 4, 5: 5, 6: 4, 7: 4}
+
+  Stratum 'established_low':
+  {0: 6, 1: 6, 2: 6, 3: 6, 4: 5, 5: 6, 6: 6, 7: 6}
+
+  Stratum 'early_low':
+  {0: 2, 1: 2, 2: 1, 3: 2, 4: 2, 5: 2, 6: 2, 7: 2}
+
+✓ Exported 200 assignments to /Users/ellandalla/Documents/GitHub/Customer_Churn_Analysis/venv/Results/logs/assignments_factorial_v1.csv
+
+============================================================
+✅ DEMONSTRATION COMPLETE
+============================================================

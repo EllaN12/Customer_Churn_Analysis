@@ -1,0 +1,112 @@
+================================================================================
+BAYESIAN CHURN REDUCTION A/B TEST
+================================================================================
+
+STEP 1: Loading data...
+✓ Using recommendation file: /Users/ellandalla/Documents/GitHub/Customer_Churn_Analysis/venv/Results/recommendation.csv
+✓ Features prepared
+  - Total customers: 2067
+  - Actual churn rate: 79.9%
+  - Mean predicted churn: 73.3%
+
+STEP 2: Creating test segment...
+
+✓ Contract+Payment test segment: 2067 customers
+
+============================================================
+BALANCE CHECK
+============================================================
+
+Customers per arm:
+treatment_arm
+0    199
+1    187
+2    187
+3    227
+Name: count, dtype: int64
+
+Covariate balance:
+               Churn_Rate  MonthlyCharges  tenure  uses_echeck
+treatment_arm                                                 
+0                    0.74           77.65   15.40         0.61
+1                    0.73           76.21   15.81         0.63
+2                    0.74           73.78   12.90         0.63
+3                    0.74           75.39   14.54         0.63
+
+Kruskal-Wallis tests (p-value, want >0.05 for balance):
+  Churn_Rate: p=0.831 ✓ Balanced
+  MonthlyCharges: p=0.475 ✓ Balanced
+  tenure: p=0.253 ✓ Balanced
+  uses_echeck: p=0.982 ✓ Balanced
+
+STEP 3: Simulating test outcomes...
+
+============================================================
+SIMULATED TEST RESULTS
+============================================================
+                 N  Churned  Observed_Rate  Predicted_Rate
+treatment_arm                                             
+0              199      145          0.729           0.738
+1              187      111          0.594           0.727
+2              187       88          0.471           0.738
+3              227      105          0.463           0.736
+
+STEP 4: Building Bayesian model...
+✓ Model built successfully
+
+Running MCMC sampling...
+  Draws: 1000, Tune: 500, Chains: 4
+                                                                                                                            
+  Progress                            Draws   Divergences   Step size   Grad evals   Sampling Speed    Elapsed   Remaining  
+ ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── 
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━   1499    0             0.133       31           136.84 drawss/s   0:00:10   0:00:00    
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━   1499    0             0.207       15           130.85 drawss/s   0:00:11   0:00:00    
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━   1499    0             0.213       31           133.26 drawss/s   0:00:11   0:00:00    
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━   1499    0             0.132       15           130.01 drawss/s   0:00:11   0:00:00    
+                                                                                                                            
+✓ Sampling complete
+
+Convergence diagnostics:
+                      mean     sd  hdi_3%  ...  ess_bulk  ess_tail  r_hat
+treatment_effect[0]  0.434  0.189   0.096  ...  2455.477  2371.115  1.000
+treatment_effect[1] -0.036  0.177  -0.345  ...  2549.657  2586.997  1.001
+treatment_effect[2] -0.484  0.182  -0.835  ...  2361.885  3018.795  1.002
+treatment_effect[3] -0.544  0.177  -0.862  ...  2397.693  2922.020  1.002
+mu_baseline          0.574  0.062   0.452  ...  1624.528  1892.376  1.002
+
+[5 rows x 9 columns]
+
+STEP 5: Decision analysis...
+
+================================================================================
+BAYESIAN DECISION ANALYSIS
+================================================================================
+            P(Superiority >8%) P(in ROPE <2%)  ... P(ROI > 2x)     Decision
+Treatment_1              0.981        0.00325  ...         1.0  ✓ IMPLEMENT
+Treatment_2                1.0            0.0  ...         1.0  ✓ IMPLEMENT
+Treatment_3                1.0            0.0  ...         1.0  ✓ IMPLEMENT
+
+[3 rows x 10 columns]
+
+STEP 6: Generating visualizations...
+
+Generating plots...
+  ✓ Saved: /Users/ellandalla/Documents/GitHub/Customer_Churn_Analysis/venv/Results/visualizations/posterior_treatment_effects.png
+  ✓ Saved: /Users/ellandalla/Documents/GitHub/Customer_Churn_Analysis/venv/Results/visualizations/forest_plot.png
+  ✓ Saved: /Users/ellandalla/Documents/GitHub/Customer_Churn_Analysis/venv/Results/visualizations/trace_plots.png
+  ✓ Saved: /Users/ellandalla/Documents/GitHub/Customer_Churn_Analysis/venv/Results/visualizations/pairwise_comparisons.png
+✓ All plots generated
+
+================================================================================
+FINAL RECOMMENDATIONS
+================================================================================
+
+✓ Recommended action: Treatment_2
+  - Expected value: $647.26 per customer
+  - Probability of >8% churn reduction: 100.0%
+
+================================================================================
+✓ Analysis complete!
+================================================================================
+
+✓ Results saved to /Users/ellandalla/Documents/GitHub/Customer_Churn_Analysis/venv/Results/decision_results.csv

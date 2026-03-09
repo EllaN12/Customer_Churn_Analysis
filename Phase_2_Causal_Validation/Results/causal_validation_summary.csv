@@ -1,0 +1,7 @@
+Driver,Naive_Association_pp,Corrected_Causal_pp,Causal_Status,Priority_Action,Projected_Annual_Value_USD
+Early Tenure (≤40d),+37.7,~+35 (approx causal),Approximately causal — low selection at t≤40d,Phase 1: onboarding intervention (4-arm RCT),82000
+Month-to-Month Contract,+39.9,Not identified obs.,Endogenous — Phase 2 Factor B randomised experiment,Phase 2 Factor B: 1-yr contract offer + 10% discount,93000
+Electronic Check Payment,+28.6,Not identified obs.,Endogenous — Phase 2 Factor C randomised experiment,Quick Win: $10 autopay credit campaign + Phase 2 Factor C,67000
+Fiber Optic Service,+22.9,Not identified obs.,Endogenous — included in Phase 2/3 design,Phase 3B: fiber retention program (price lock),85000
+Has Add-on Services,-5.4,~-3 to -5 (suggestive),Endogenous + collider bias — Phase 2 Factor A experiment,Phase 2 Factor A: free 30-day add-on trial,TBD from experiment
+Senior Citizen,+18.1,~+16 (exogenous),Exogenous — valid causal estimate (Phase 3A program),Phase 3A: senior-specific retention program,45000

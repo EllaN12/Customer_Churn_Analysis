@@ -1,0 +1,164 @@
+================================================================================
+POWER ANALYSIS: RANDOMIZED EXPERIMENTS
+
+Using results directory: /Users/ellandalla/Documents/GitHub/Customer_Churn_Analysis/venv/Results
+✓ Power analysis initialized
+  Results directory: /Users/ellandalla/Documents/GitHub/Customer_Churn_Analysis/venv/Results
+  Visualizations: /Users/ellandalla/Documents/GitHub/Customer_Churn_Analysis/venv/Results/visualizations
+
+================================================================================
+EXPERIMENT 1: EARLY TENURE INTERVENTION - POWER ANALYSIS
+================================================================================
+
+Running 1000 simulations with n=100 per arm...
+
+============================================================
+POWER ANALYSIS RESULTS (n=100 per arm)
+============================================================
+               Arm  Bayesian_Power  Frequentist_Power
+T1 (10% reduction)           0.091              0.258
+T2 (15% reduction)           0.241              0.511
+T3 (20% reduction)           0.528              0.779
+
+✓ Saved: /Users/ellandalla/Documents/GitHub/Customer_Churn_Analysis/venv/Results/visualizations/power_comparison.png
+
+================================================================================
+SAMPLE SIZE SENSITIVITY ANALYSIS
+================================================================================
+
+Testing n=50 per arm...
+
+================================================================================
+EXPERIMENT 1: EARLY TENURE INTERVENTION - POWER ANALYSIS
+================================================================================
+
+Running 200 simulations with n=50 per arm...
+
+============================================================
+POWER ANALYSIS RESULTS (n=50 per arm)
+============================================================
+               Arm  Bayesian_Power  Frequentist_Power
+T1 (10% reduction)           0.085              0.120
+T2 (15% reduction)           0.205              0.265
+T3 (20% reduction)           0.410              0.475
+
+✓ Saved: /Users/ellandalla/Documents/GitHub/Customer_Churn_Analysis/venv/Results/visualizations/power_comparison.png
+
+Testing n=75 per arm...
+
+================================================================================
+EXPERIMENT 1: EARLY TENURE INTERVENTION - POWER ANALYSIS
+================================================================================
+
+Running 200 simulations with n=75 per arm...
+
+============================================================
+POWER ANALYSIS RESULTS (n=75 per arm)
+============================================================
+               Arm  Bayesian_Power  Frequentist_Power
+T1 (10% reduction)           0.095              0.180
+T2 (15% reduction)           0.215              0.335
+T3 (20% reduction)           0.485              0.650
+
+✓ Saved: /Users/ellandalla/Documents/GitHub/Customer_Churn_Analysis/venv/Results/visualizations/power_comparison.png
+
+Testing n=100 per arm...
+
+================================================================================
+EXPERIMENT 1: EARLY TENURE INTERVENTION - POWER ANALYSIS
+================================================================================
+
+Running 200 simulations with n=100 per arm...
+
+============================================================
+POWER ANALYSIS RESULTS (n=100 per arm)
+============================================================
+               Arm  Bayesian_Power  Frequentist_Power
+T1 (10% reduction)           0.105              0.295
+T2 (15% reduction)           0.300              0.550
+T3 (20% reduction)           0.545              0.790
+
+✓ Saved: /Users/ellandalla/Documents/GitHub/Customer_Churn_Analysis/venv/Results/visualizations/power_comparison.png
+
+Testing n=125 per arm...
+
+================================================================================
+EXPERIMENT 1: EARLY TENURE INTERVENTION - POWER ANALYSIS
+================================================================================
+
+Running 200 simulations with n=125 per arm...
+
+============================================================
+POWER ANALYSIS RESULTS (n=125 per arm)
+============================================================
+               Arm  Bayesian_Power  Frequentist_Power
+T1 (10% reduction)           0.075              0.340
+T2 (15% reduction)           0.385              0.655
+T3 (20% reduction)           0.635              0.885
+
+✓ Saved: /Users/ellandalla/Documents/GitHub/Customer_Churn_Analysis/venv/Results/visualizations/power_comparison.png
+
+Testing n=150 per arm...
+
+================================================================================
+EXPERIMENT 1: EARLY TENURE INTERVENTION - POWER ANALYSIS
+================================================================================
+
+Running 200 simulations with n=150 per arm...
+
+============================================================
+POWER ANALYSIS RESULTS (n=150 per arm)
+============================================================
+               Arm  Bayesian_Power  Frequentist_Power
+T1 (10% reduction)           0.105              0.385
+T2 (15% reduction)           0.340              0.700
+T3 (20% reduction)           0.665              0.925
+
+✓ Saved: /Users/ellandalla/Documents/GitHub/Customer_Churn_Analysis/venv/Results/visualizations/power_comparison.png
+
+Testing n=200 per arm...
+
+================================================================================
+EXPERIMENT 1: EARLY TENURE INTERVENTION - POWER ANALYSIS
+================================================================================
+
+Running 200 simulations with n=200 per arm...
+
+============================================================
+POWER ANALYSIS RESULTS (n=200 per arm)
+============================================================
+               Arm  Bayesian_Power  Frequentist_Power
+T1 (10% reduction)           0.055              0.470
+T2 (15% reduction)           0.330              0.805
+T3 (20% reduction)           0.710              0.980
+
+✓ Saved: /Users/ellandalla/Documents/GitHub/Customer_Churn_Analysis/venv/Results/visualizations/power_comparison.png
+
+============================================================
+SAMPLE SIZE SENSITIVITY RESULTS
+============================================================
+ sample_size  total_n  T2_power  cost_per_experiment
+          50      200     0.205                15000
+          75      300     0.215                22500
+         100      400     0.300                30000
+         125      500     0.385                37500
+         150      600     0.340                45000
+         200      800     0.330                60000
+
+✓ Saved: Results/sample_size_sensitivity.png
+
+============================================================
+RECOMMENDATION:
+============================================================
+⚠️ No tested sample size achieves 90% power
+   Maximum power achieved: 38.5% (with n=125 per arm)
+
+   Options:
+   1. Accept 38.5% power with n=125 per arm
+      Total: 500, Cost: $37,500
+   3. Test larger sample: n=187 per arm (recommended)
+      (Rerun with larger sample sizes in the list)
+
+✅ POWER ANALYSIS COMPLETE
+
+Results saved to: /Users/ellandalla/Documents/GitHub/Customer_Churn_Analysis/venv/Results

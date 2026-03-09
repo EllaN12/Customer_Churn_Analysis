@@ -1,0 +1,10 @@
+Variable,Causal_Role,Valid_Control,Causal_Estimate_pp,Action
+tenure,Collider,NO,N/A,Remove from causal models
+Contract,Other treatment,NO,N/A,Treat as Factor B in experiment
+PaymentMethod,Other treatment,NO,N/A,Treat as Factor C in experiment
+MonthlyCharges,Mediator,NO,N/A,Remove from causal models
+SeniorCitizen,Exogenous confounder,YES,~+16 (exogenous),Include as confounder
+Dependents,Exogenous confounder,YES,~-6 (exogenous),Include as confounder
+Partner,Exogenous confounder,YES*,~-3 (exogenous),Include as confounder
+add_ons (v1 wrong model),Treatment (endogenous),N/A,-17.0 (biased by collider),Discard — wrong model
+add_ons (v2 correct model),Treatment (endogenous),N/A,-10.4 (suggestive),Label suggestive; run Phase 2 Factor A

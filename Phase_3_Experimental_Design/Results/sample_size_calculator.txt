@@ -1,0 +1,140 @@
+================================================================================
+SAMPLE SIZE CALCULATOR: PORTFOLIO PROJECT
+================================================================================
+✓ Sample Size Calculator initialized
+  Target power: 90%
+  Alpha: 0.05
+
+================================================================================
+CALCULATION 1: EARLY TENURE INTERVENTION
+================================================================================
+
+================================================================================
+EARLY TENURE INTERVENTION: SAMPLE SIZE CALCULATION
+================================================================================
+
+Sample Size Requirements:
+        Treatment        Effect Control_Rate Treatment_Rate  N_per_Arm  Total_N   Cost Power
+T1 (Welcome Call) 10% reduction        60.9%          50.9%        519     2076 155700   90%
+ T2 (Smart Start) 15% reduction        60.9%          45.9%        233      932  69900   90%
+   T3 (Concierge) 20% reduction        60.9%          40.9%        132      528  39600   90%
+
+============================================================
+RECOMMENDATION:
+============================================================
+
+✓ Recommended: T2 (Smart Start)
+  Sample size: 233 per arm (932 total)
+  Expected cost: $69,900
+  Power: 90%
+
+  Rationale: Best balance of effect size, power, and cost
+
+================================================================================
+CALCULATION 2: FACTORIAL DESIGN
+================================================================================
+
+================================================================================
+FACTORIAL DESIGN (2×2×2): SAMPLE SIZE CALCULATION
+================================================================================
+
+Main Effects to Detect:
+  1. Contract effect: 31% reduction
+  2. Payment effect: 20% reduction
+  3. Add-on effect: 5% reduction
+
+Sample Size Requirements:
+  Cells: 8 (2×2×2 design)
+  Per cell: 360
+  Total N: 2880
+  Expected cost: $216,000
+
+Power by Effect:
+  Contract: >95%
+  Payment: >95%
+  Add-ons: >95%
+
+================================================================================
+GENERATING POWER CURVE
+================================================================================
+
+✓ Saved power curve: Results/visualizations/power_curve.png
+
+Power at different sample sizes:
+ sample_size    power
+          50 0.324021
+         100 0.566031
+         150 0.740258
+         200 0.852449
+         250 0.919530
+         300 0.957537
+
+================================================================================
+COST-BENEFIT OPTIMIZATION
+================================================================================
+
+================================================================================
+COST-BENEFIT OPTIMIZATION
+================================================================================
+
+Assumptions:
+  Control churn: 60.9%
+  Treatment churn: 45.9%
+  Effect size: 15.0%
+  Revenue per prevented churn: $2,000
+  Annual new customers: 5,000
+
+Optimal Sample Size:
+  n per arm: 380
+  Total N: 1520
+  Power: 98.6%
+  Experiment cost: $114,000
+  Expected annual benefit: $1,478,325
+  Net expected value: $1,364,325
+
+================================================================================
+QUICK RECOMMENDATIONS
+================================================================================
+
+================================================================================
+QUICK SAMPLE SIZE RECOMMENDATION
+================================================================================
+
+Experiment: Early Tenure Intervention (4 arms)
+Target: Detect 15% reduction (60.9% → 45.9%)
+
+✓ RECOMMENDATION:
+  Sample size: 233 per arm
+  Total N: 932
+  Power: 0.9
+  Expected cost: $69,900
+
+================================================================================
+QUICK SAMPLE SIZE RECOMMENDATION
+================================================================================
+
+Experiment: Factorial Design (2×2×2)
+Target: Detect smallest main effect (5% for add-ons)
+
+✓ RECOMMENDATION:
+  Per cell: 360
+  Total N: 2880
+  Power: >90%
+  Expected cost: $216,000
+
+================================================================================
+✅ SAMPLE SIZE CALCULATIONS COMPLETE
+================================================================================
+
+Generated outputs:
+  ✓ Early tenure sample sizes
+  ✓ Factorial design sample sizes
+  ✓ Power curve (Results/visualizations/power_curve.png)
+  ✓ Cost-benefit optimization
+  ✓ Quick recommendations
+
+Portfolio Value:
+  • Demonstrates proper sample size planning
+  • Shows understanding of power analysis
+  • Includes cost-benefit considerations
+  • Provides actionable recommendations
