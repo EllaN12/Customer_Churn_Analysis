@@ -349,4 +349,4 @@ Full uncertainty quantification (credible intervals, Monte Carlo sensitivity) is
 | Futility at P < 0.05 | Prevents wasting budget on experiments with negligible probability of any detectable benefit |
 | Informed priors Beta(2,9) / Beta(2,12) / Beta(1,9) | Encode prior knowledge that treatments reduce churn relative to control, without being overconfident |
 | 4 MCMC chains | Required for reliable R-hat convergence diagnostics; 2 chains is insufficient to detect non-convergence |
-| Thompson Sampling from week 5 | Reduces patient exposure to inferior arms while maintaining valid posterior inference |
+| Thompson Sampling from week 5 | Reduces customer exposure to inferior arms while maintaining valid posterior inference |
