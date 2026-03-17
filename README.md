@@ -527,7 +527,7 @@ The naive −0.2pp add-on effect masked a true causal −5.8pp effect once colli
 | **Experimental Design** | Sequential Bayesian testing, stratified block randomisation, Monte Carlo power analysis, adaptive allocation |
 | **Machine Learning** | Decision trees, AutoML, stacked ensembles, SMOTE, MLflow lifecycle management |
 | **Engineering** | PySpark distributed computing, Docker containerisation, GCP Cloud Run deployment, Streamlit dashboards |
-| **Statistical Rigour** | Self-identified and corrected own methodological bias — a top-tier statistical competency seldom demonstrated explicitly |
+| **Statistical Rigour** | Self-identified and corrected own methodological bias |
 | **Communication** | 17-slide executive presentation, automated stakeholder reports, decision memos, ROI analysis |
 
 ---
