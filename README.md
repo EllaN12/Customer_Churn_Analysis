@@ -29,7 +29,6 @@
 - [Business Recommendations](#business-recommendations)
 - [Technology Stack](#technology-stack)
 - [Design Documents](#design-documents)
-- [Skills Demonstrated](#skills-demonstrated)
 - [License](#license)
 
 ---
@@ -136,7 +135,7 @@ Customer_Churn_Analysis/
 │   └── Results/                           ← AUC curves, confusion matrix, feature importance
 │
 ├── Phase_2_Causal_Validation/
-│   ├── proper_causal_inference.py         ← Corrected causal model (primary)
+│   ├── proper_causal_inference.py         ← Causal model (primary)
 │   ├── full_dataset_causal_validation.py  ← ChurnDataPipeline class + validation
 │   ├── bayesian_analysis_engine.py        ← Reusable Bayesian engine (4 chains)
 │   └── Results/
@@ -493,7 +492,7 @@ The naive −0.2pp add-on effect masked a true causal −5.8pp effect once colli
 
 | Layer | Technology | Purpose |
 |-------|-----------|---------|
-| **Data Ingestion** | PySpark 3.x | Distributed CSV processing, BigQuery-portable ETL |
+| **Data Ingestion** | PySpark 3.x | Distributed CSV processing |
 | **Data Transformation** | Spark SQL, Pandas, NumPy | Feature engineering, type casting, imputation |
 | **ML — Baseline** | PySpark MLlib (Decision Tree) | Interpretable baseline model |
 | **ML — Production** | H2O AutoML, Sparkling Water | Stacked ensemble (GBM + XGBoost + GLM) |
@@ -515,20 +514,6 @@ The naive −0.2pp add-on effect masked a true causal −5.8pp effect once colli
 | `Bayesian_Experimental_Design_Final.md` | `Design_documents/` | Authoritative methodology spec — segment baselines, stopping rules, priors, decision framework |
 | `bayesian_ab_test_design.md` | `Design_documents/` | Original test design notes |
 | `Customer_Churn_Final.pptx` | Root | 17-slide executive presentation covering all 5 phases |
-
----
-
-## Skills Demonstrated
-
-| Domain | Specifics |
-|--------|-----------|
-| **Causal Inference** | DAG-based variable classification, collider/mediator identification, backdoor criterion, G-computation, IPW propensity weighting |
-| **Bayesian Statistics** | Hierarchical models, informed prior elicitation, MCMC (NUTS), convergence diagnostics (R-hat, ESS), ROPE, Thompson Sampling |
-| **Experimental Design** | Sequential Bayesian testing, stratified block randomisation, Monte Carlo power analysis, adaptive allocation |
-| **Machine Learning** | Decision trees, AutoML, stacked ensembles, SMOTE, MLflow lifecycle management |
-| **Engineering** | PySpark distributed computing, Docker containerisation, GCP Cloud Run deployment, Streamlit dashboards |
-| **Statistical Rigour** | Self-identified and corrected own methodological bias |
-| **Communication** | 17-slide executive presentation, automated stakeholder reports, decision memos, ROI analysis |
 
 ---
 
