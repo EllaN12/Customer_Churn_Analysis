@@ -290,7 +290,7 @@ class FullDatasetCausalAnalysis:
     def demonstrate_collider_bias(self):
         """
         Empirically show why controlling for tenure reverses the add-on effect.
-        This is the key methodological finding of the portfolio project.
+        This is the key methodological finding of this project.
         """
         print("\n" + "=" * 70)
         print("COLLIDER BIAS DEMONSTRATION")

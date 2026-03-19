@@ -18,7 +18,7 @@ warnings.filterwarnings('ignore')
 
 # Centralized path config
 _PROJECT_DIR = Path(__file__).resolve().parents[1]
-_CONFIG_DIR = _PROJECT_DIR / "Methodology for portfolio"
+_CONFIG_DIR = _PROJECT_DIR / "Design_documents"
 if str(_CONFIG_DIR) not in sys.path:
     sys.path.insert(0, str(_CONFIG_DIR))
 

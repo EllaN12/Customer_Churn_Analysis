@@ -28,13 +28,13 @@ sns.set_style('whitegrid')
 _SCRIPT_DIR = Path(__file__).resolve().parent
 _CONFIG_DIR = None
 for parent in _SCRIPT_DIR.parents:
-    candidate = parent / "Methodology for portfolio"
+    candidate = parent / "Design_documents"
     if candidate.exists():
         _CONFIG_DIR = candidate
         break
 if _CONFIG_DIR is None:
     raise ModuleNotFoundError(
-        f"Could not locate 'Methodology for portfolio' from {_SCRIPT_DIR}"
+        f"Could not locate 'Design_documents' from {_SCRIPT_DIR}"
     )
 
 if str(_CONFIG_DIR) not in sys.path:

@@ -25,7 +25,7 @@ sns.set_style('whitegrid')
 # Centralized path config
 _SCRIPT_DIR = Path(__file__).resolve().parent
 _PROJECT_DIR = _SCRIPT_DIR.parent
-_CONFIG_DIR = _PROJECT_DIR / "Methodology for portfolio"
+_CONFIG_DIR = _PROJECT_DIR / "Design_documents"
 
 if str(_CONFIG_DIR) not in sys.path:
     sys.path.insert(0, str(_CONFIG_DIR))

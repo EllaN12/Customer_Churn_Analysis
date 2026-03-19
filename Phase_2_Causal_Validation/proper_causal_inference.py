@@ -520,7 +520,7 @@ def propose_experiment(df: pd.DataFrame):
 
     print(f"  TARGET POPULATION: {len(mtm):,} month-to-month customers")
     print(f"  BASELINE CHURN:    {baseline_churn:.1%}")
-    print(f"  HOLDOUT (excluded): 200 customers (global holdout — Google standard)")
+    print(f"  HOLDOUT (excluded): 200 customers (global holdout)")
     print()
 
     power_scenarios = [
@@ -555,7 +555,7 @@ def propose_experiment(df: pd.DataFrame):
 # STEP 6: SUMMARY AND REPORT
 # =============================================================================
 
-def generate_summary_and_interview_prep(df, naive_samples, causal_samples):
+def generate_summary(df, naive_samples, causal_samples):
     """Save summary CSV."""
     print("\n" + "=" * 70)
     print("STEP 6: SUMMARY")
@@ -593,7 +593,7 @@ def generate_summary_and_interview_prep(df, naive_samples, causal_samples):
 if __name__ == '__main__':
     print("=" * 70)
     print("CAUSAL INFERENCE FRAMEWORK")
-    print("Customer Risk & Retention | Google GBS&O Portfolio Project")
+    print("Customer Risk & Retention")
     print("=" * 70)
 
     # ── Load data via shared pipeline ─────────────────────────────────────────
@@ -616,7 +616,7 @@ if __name__ == '__main__':
     propose_experiment(df)
 
     # ── Step 6: Summary ───────────────────────────────────────────────────────
-    generate_summary_and_interview_prep(df, naive_samples, causal_samples)
+    generate_summary(df, naive_samples, causal_samples)
 
     print("\n" + "=" * 70)
     print("COMPLETE")
