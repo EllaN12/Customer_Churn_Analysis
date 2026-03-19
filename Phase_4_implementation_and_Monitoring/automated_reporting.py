@@ -1,8 +1,6 @@
 """
-Automated Reporting System (UPDATED)
+Automated Reporting System
 Portfolio Project: Stakeholder-Friendly Experiment Reports
-
-UPDATED: Now uses config.py for directory management
 
 Generates:
 - Weekly experiment summaries
@@ -33,8 +31,7 @@ sns.set_style('whitegrid')
 
 class AutomatedReporter:
     """
-    Generates stakeholder reports for running experiments
-    UPDATED: Uses config.py for paths
+    Generates stakeholder reports for running experiments.
     """
     
     def __init__(self, experiment_name, output_dir=None):
@@ -48,7 +45,7 @@ class AutomatedReporter:
         """
         self.experiment_name = experiment_name
         
-        # UPDATED: Use config directory if not specified
+        # Use config directory if not specified
         if output_dir is None:
             self.output_dir = Path(reports_dir)
         else:
@@ -158,7 +155,7 @@ class AutomatedReporter:
         report.append("Questions? Contact: Data Science Team")
         report.append("="*80)
         
-        # Save report - UPDATED PATH
+        # Save report
         report_text = "\n".join(report)
         
         filename = get_report_path(f'weekly_summary_week_{week_number}.txt')
@@ -171,8 +168,7 @@ class AutomatedReporter:
     
     def generate_executive_dashboard(self, data, week_number, posteriors, decision):
         """
-        Generate visual dashboard for executives
-        UPDATED: Uses config paths
+        Generate visual dashboard for executives.
         """
         fig, axes = plt.subplots(2, 2, figsize=(16, 12))
         fig.suptitle(f'{self.experiment_name} - Week {week_number} Dashboard',
@@ -295,7 +291,6 @@ class AutomatedReporter:
         
         plt.tight_layout()
         
-        # UPDATED PATH
         filename = get_visualization_path(f'executive_dashboard_week_{week_number}.png')
         plt.savefig(filename, dpi=300, bbox_inches='tight')
         print(f"✓ Saved executive dashboard: {filename}")
@@ -303,8 +298,7 @@ class AutomatedReporter:
     
     def generate_decision_memo(self, decision, week_number, expected_roi=None):
         """
-        Generate executive decision memo
-        UPDATED: Uses config paths
+        Generate executive decision memo.
         """
         memo = []
         
@@ -379,7 +373,6 @@ class AutomatedReporter:
         
         memo_text = "\n".join(memo)
         
-        # UPDATED PATH
         filename = get_report_path(f'decision_memo_week_{week_number}.txt')
         with open(filename, 'w') as f:
             f.write(memo_text)
@@ -525,12 +518,4 @@ This automated reporting system demonstrates:
   - Explicit next steps
   - ROI quantified
 
-In interviews, you can show:
-1. Sample reports (professional format)
-2. Dashboard visualizations (clear, actionable)
-3. Decision framework (when to stop, what to do)
-4. Automated scheduling (production integration)
-
-This shows you don't just analyze—you communicate
-effectively to drive decisions.
     """)

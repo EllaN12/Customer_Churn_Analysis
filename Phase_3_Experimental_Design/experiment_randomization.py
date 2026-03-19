@@ -51,7 +51,7 @@ class ExperimentRandomizer:
         self.assignments = []
         self.current_blocks = {}  # One per stratum
         
-        # Logging - UPDATED to use config
+        # Logging
         self.log_file = get_log_path(f'randomization_log_{experiment_name}.csv')
         
         print(f"✓ Initialized randomizer for '{experiment_name}'")
@@ -367,13 +367,4 @@ This randomization system demonstrates:
   - Can integrate with signup system
   - Automated logging
   - Export capabilities
-
-In interviews, you can show:
-1. The code (demonstrates proper randomization)
-2. Balance check results (shows it works)
-3. Audit log (shows professionalism)
-4. Stratification strategy (shows sophistication)
-
-This shows you understand experimental design
-beyond just running tests.
     """)

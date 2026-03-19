@@ -9,12 +9,7 @@
 
 ## 1. Guiding Principle: Segment-Specific Baselines
 
-All experimental baselines are drawn from the **observed historical churn rate of the target segment**, not from either of the following (which are incorrect for this purpose):
-
-| Source | Value | Why It Is Wrong Here |
-|---|---|---|
-| Full-population churn rate | 26.5% | Too dilute — mixes low-risk and high-risk customers; inflates required sample sizes and understates the signal |
-| ML model mean predicted probability | 71.4% | This is a model score, not an observed outcome; produces circular reasoning |
+All experimental baselines are drawn from the **observed historical churn rate of the target segment**.
 
 The 26.5% full-population figure belongs in **fleet-wide ROI projections** (denominator for business impact), not in experimental power calculations or prior specification.
 
@@ -61,16 +56,16 @@ Each test targets a distinct high-risk cohort. Baselines below are **observed hi
 
 ## 4. Bayesian Decision Thresholds (All Tests)
 
-The following thresholds apply uniformly across all three experiments, per the design specification in `BAYESIAN_TEST_DESIGN_UPDATES.md`:
+The following thresholds apply uniformly across all three experiments:
 
-| Criterion | Threshold | Previous (incorrect) Value |
-|---|---|---|
-| **Superiority** | P(reduction > 8pp) > **0.95** | P(>10pp) > 0.90 |
-| **Minimum detectable effect** | **8 percentage points** | 10–15pp |
-| **Futility** | Max P(any arm helps) < **0.05** | < 0.20 (4× too lenient) |
-| **ROPE (practical equivalence)** | P(\|diff\| < 2pp) > 0.80 for all arms | Not implemented |
-| **MCMC chains** | **4** | 2 |
-| **Posterior samples** | 2,000 draws, 1,000 tuning, target_accept=0.95 | same |
+| Criterion | Threshold |
+|---|---|
+| **Superiority** | P(reduction > 8pp) > **0.95** |
+| **Minimum detectable effect** | **8 percentage points** |
+| **Futility** | Max P(any arm helps) < **0.05** |
+| **ROPE (practical equivalence)** | P(\|diff\| < 2pp) > 0.80 for all arms |
+| **MCMC chains** | **4** |
+| **Posterior samples** | 2,000 draws, 1,000 tuning, target_accept=0.95 |
 
 ---
 

@@ -172,7 +172,7 @@ class ExperimentPowerAnalysis:
         Main effects:
         - Contract: -31% (MTM 42.7% → 1-year 11.7%)
         - Payment: -20% (E-check 45.3% → Autopay 25.3%)
-        - Add-ons: -5% (based on corrected causal estimate)
+        - Add-ons: -5% (causal estimate)
         """
         print("\n" + "="*80)
         print("EXPERIMENT 2: FACTORIAL DESIGN - POWER ANALYSIS")

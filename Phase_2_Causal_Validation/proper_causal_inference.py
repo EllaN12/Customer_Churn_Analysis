@@ -1,18 +1,17 @@
 """
 proper_causal_inference.py
 ===========================
-Corrected Causal Inference Framework — Customer Churn & Retention
+Causal Inference Framework — Customer Churn & Retention
 
 Purpose:
-    Documents and demonstrates the causal inference correction made to the
-    original analysis. The original approach incorrectly controlled for
-    tenure, contract type, and payment method as confounders. This script:
+    Causal variable classification and model fitting for the churn analysis.
+    This script:
       1. Imports the ChurnDataPipeline from full_dataset_causal_validation.py
-      2. Explains why those controls were wrong (collider / other treatment / mediator)
+      2. Classifies every variable by its causal role (collider / other treatment / mediator / confounder)
       3. Demonstrates collider bias empirically
-      4. Fits the corrected observational model (exogenous confounders only)
+      4. Fits the causal observational model (exogenous confounders only)
       5. Proposes the 2x2x2 factorial experiment as the gold-standard solution
-      6. Produces  output and visualisations
+      6. Produces output and visualisations
 
     
 Run:
@@ -254,19 +253,20 @@ Expected signature of collider bias:
 
 
 # =============================================================================
-# STEP 3: WRONG MODEL vs. CORRECT MODEL SIDE-BY-SIDE
+# STEP 3: NAIVE vs. CAUSAL MODEL — SIDE-BY-SIDE
 # =============================================================================
 
-def compare_wrong_vs_correct_model(df: pd.DataFrame):
+def compare_naive_vs_causal_model(df: pd.DataFrame):
     """
-    Fit both the wrong (v1) and correct (v2) causal models for add-ons.
-    Comparing them makes the collider bias tangible and quantifiable.
+    Fit both the naive model (endogenous controls) and the causal model
+    (exogenous confounders only). Comparing them makes the collider bias
+    tangible and quantifiable.
     """
     print("\n" + "=" * 70)
-    print("STEP 3: INITIAL MODEL vs. CORRECT MODEL — SIDE-BY-SIDE")
+    print("STEP 3: NAIVE MODEL vs. CAUSAL MODEL — SIDE-BY-SIDE")
     print("=" * 70)
-    print("  initial model  (v1): controls for tenure, contract, payment, charges")
-    print("  CORRECT (v2): controls only for senior, dependents, partner\n")
+    print("  Naive model  (v1): controls for tenure, contract, payment, charges")
+    print("  Causal model (v2): controls only for senior, dependents, partner\n")
 
     has_addon = df['has_addons'].values
     churn     = df['churn_binary'].values
@@ -279,9 +279,9 @@ def compare_wrong_vs_correct_model(df: pd.DataFrame):
     is_fiber    = df['is_fiber'].values
     charges_std = (df['monthly_charges'].values - df['monthly_charges'].mean()) / df['monthly_charges'].std()
 
-    # ── Wrong model (v1) ─────────────────────────────────────────────────────
-    print("  Fitting Initial model (v1)...")
-    with pm.Model() as wrong_model:
+    # ── Naive model (v1) ─────────────────────────────────────────────────────
+    print("  Fitting naive model (v1)...")
+    with pm.Model() as naive_model:
         baseline     = pm.Beta('baseline', alpha=265, beta=735)
         addon_effect = pm.Normal('addon_effect', mu=-0.054, sigma=0.03)
         b_tenure     = pm.Normal('b_tenure',  mu=0, sigma=0.5)
@@ -297,13 +297,13 @@ def compare_wrong_vs_correct_model(df: pd.DataFrame):
             + b_charges    * charges_std
         )
         pm.Bernoulli('churn', p=pm.math.invlogit(logit_p), observed=churn)
-        trace_wrong = pm.sample(1000, tune=500, chains=2,
+        trace_naive = pm.sample(1000, tune=500, chains=2,
                                 target_accept=0.9, progressbar=False,
                                 return_inferencedata=True)
 
-    # ── Correct model (v2) ───────────────────────────────────────────────────
-    print("  Fitting CORRECT model (v2)...")
-    with pm.Model() as correct_model:
+    # ── Causal model (v2) ────────────────────────────────────────────────────
+    print("  Fitting causal model (v2)...")
+    with pm.Model() as causal_model:
         baseline     = pm.Beta('baseline', alpha=265, beta=735)
         addon_effect = pm.Normal('addon_effect', mu=-0.04, sigma=0.05)
         b_senior     = pm.Normal('b_senior',  mu=0, sigma=0.3)
@@ -317,13 +317,13 @@ def compare_wrong_vs_correct_model(df: pd.DataFrame):
             + b_partner    * partner
         )
         pm.Bernoulli('churn', p=pm.math.invlogit(logit_p), observed=churn)
-        trace_correct = pm.sample(1000, tune=500, chains=2,
-                                  target_accept=0.9, progressbar=False,
-                                  return_inferencedata=True)
+        trace_causal = pm.sample(1000, tune=500, chains=2,
+                                 target_accept=0.9, progressbar=False,
+                                 return_inferencedata=True)
 
     # ── Compare ───────────────────────────────────────────────────────────────
-    wrong_samples   = trace_wrong.posterior['addon_effect'].values.flatten()
-    correct_samples = trace_correct.posterior['addon_effect'].values.flatten()
+    naive_samples  = trace_naive.posterior['addon_effect'].values.flatten()
+    causal_samples = trace_causal.posterior['addon_effect'].values.flatten()
     naive = (df.loc[df['has_addons']==1,'churn_binary'].mean()
              - df.loc[df['has_addons']==0,'churn_binary'].mean())
 
@@ -332,42 +332,40 @@ def compare_wrong_vs_correct_model(df: pd.DataFrame):
     print("  " + "-" * 85)
     print(f"  {'Naive (no controls)':<30}  {naive*100:>+7.1f}pp"
           f"  {'[—]':>22}  Association only; biased")
-    print(f"  {'Initial model v1 (endogenous controls)':<30}  {wrong_samples.mean()*100:>+7.1f}pp"
-          f"  [{np.percentile(wrong_samples,2.5)*100:.1f}, "
-          f"{np.percentile(wrong_samples,97.5)*100:.1f}]pp  "
-          f"Overcorrected — collider + endogenous bias")
-    print(f"  {'CORRECT v2 (exogenous only)':<30}  {correct_samples.mean()*100:>+7.1f}pp"
-          f"  [{np.percentile(correct_samples,2.5)*100:.1f}, "
-          f"{np.percentile(correct_samples,97.5)*100:.1f}]pp  "
+    print(f"  {'Naive model v1 (endogenous controls)':<30}  {naive_samples.mean()*100:>+7.1f}pp"
+          f"  [{np.percentile(naive_samples,2.5)*100:.1f}, "
+          f"{np.percentile(naive_samples,97.5)*100:.1f}]pp  "
+          f"Over-adjusted — collider + endogenous bias")
+    print(f"  {'Causal model v2 (exogenous only)':<30}  {causal_samples.mean()*100:>+7.1f}pp"
+          f"  [{np.percentile(causal_samples,2.5)*100:.1f}, "
+          f"{np.percentile(causal_samples,97.5)*100:.1f}]pp  "
           f"Best observational estimate (residual confounding remains)")
 
     print("""
   Key insight:
-    The initial model over-adjusts because tenure is a collider — controlling
-    for it artificially suppresses the add-on effect. The CORRECT model
-    gives a slightly larger negative effect, though residual unobserved
-    confounding (customer loyalty) still biases this estimate.
+    The naive model over-adjusts because tenure is a collider — conditioning
+    on it artificially suppresses the add-on effect. The causal model
+    (exogenous confounders only) gives a slightly larger negative effect,
+    though residual unobserved confounding (customer loyalty) remains.
 
-  What this means for strategy:
-    Observational estimate: add-ons SUGGESTIVELY reduce churn ~3–5pp.
-    Definitive answer: Phase 2 Factor A randomised experiment (free trial).
-    Until then, label as 'hypothesis' not 'finding'.
+  Observational estimate: add-ons SUGGESTIVELY reduce churn ~3–5pp.
+  Definitive identification requires the Phase 3 Factor A randomised experiment.
     """)
 
     # Visualisation — posterior comparison
     fig, ax = plt.subplots(figsize=(10, 5))
     bins = np.linspace(-0.20, 0.08, 50)
-    ax.hist(wrong_samples * 100,   bins=bins, alpha=0.6, color='#D32F2F',
-            label='Initial model v1 (endogenous controls)', density=True)
-    ax.hist(correct_samples * 100, bins=bins, alpha=0.6, color='#1A73E8',
-            label='CORRECT v2 (exogenous only)',    density=True)
+    ax.hist(naive_samples * 100,  bins=bins, alpha=0.6, color='#D32F2F',
+            label='Naive model v1 (endogenous controls)', density=True)
+    ax.hist(causal_samples * 100, bins=bins, alpha=0.6, color='#1A73E8',
+            label='Causal model v2 (exogenous only)', density=True)
     ax.axvline(naive * 100, color='#F29900', linewidth=2, linestyle='--',
                label=f'Naive association ({naive*100:+.1f}pp)')
     ax.axvline(0, color='#333333', linewidth=1.5, linestyle='-', label='Zero effect')
     ax.set_xlabel('Add-on Effect on Churn (percentage points)', fontsize=12)
     ax.set_ylabel('Posterior Density', fontsize=12)
-    ax.set_title('Initial vs. Correct Causal Model — Add-on Effect Posterior\n'
-                 'v1 overcorrects due to collider bias; v2 uses exogenous confounders only',
+    ax.set_title('Naive vs. Causal Model — Add-on Effect Posterior\n'
+                 'v1 over-adjusts due to collider bias; v2 uses exogenous confounders only',
                  fontsize=12, fontweight='bold')
     ax.legend(fontsize=10)
     ax.grid(True, alpha=0.3)
@@ -377,7 +375,7 @@ def compare_wrong_vs_correct_model(df: pd.DataFrame):
     plt.close()
     print(f"  Saved → {out_path}")
 
-    return wrong_samples, correct_samples
+    return naive_samples, causal_samples
 
 
 # =============================================================================
@@ -557,28 +555,28 @@ def propose_experiment(df: pd.DataFrame):
 # STEP 6: SUMMARY AND REPORT
 # =============================================================================
 
-def generate_summary_and_interview_prep(df, wrong_samples, correct_samples):
-    """Save summary CSV and print interview-ready talking points."""
+def generate_summary_and_interview_prep(df, naive_samples, causal_samples):
+    """Save summary CSV."""
     print("\n" + "=" * 70)
-    print("STEP 6: SUMMARY AND INTERVIEW TALKING POINTS")
+    print("STEP 6: SUMMARY")
     print("=" * 70)
 
     summary = pd.DataFrame({
         'Variable': ['tenure', 'Contract', 'PaymentMethod', 'MonthlyCharges',
                      'SeniorCitizen', 'Dependents', 'Partner',
-                     'add_ons (v1 wrong model)', 'add_ons (v2 correct model)'],
+                     'add_ons (naive model, endogenous controls)', 'add_ons (causal model, exogenous only)'],
         'Causal_Role': ['Collider', 'Other treatment', 'Other treatment', 'Mediator',
                         'Exogenous confounder', 'Exogenous confounder', 'Exogenous confounder',
                         'Treatment (endogenous)', 'Treatment (endogenous)'],
         'Valid_Control': ['NO', 'NO', 'NO', 'NO', 'YES', 'YES', 'YES*', 'N/A', 'N/A'],
         'Causal_Estimate_pp': ['N/A', 'N/A', 'N/A', 'N/A', '~+16 (exogenous)',
                                '~-6 (exogenous)', '~-3 (exogenous)',
-                               f"{wrong_samples.mean()*100:+.1f} (biased by collider)",
-                               f"{correct_samples.mean()*100:+.1f} (suggestive)"],
+                               f"{naive_samples.mean()*100:+.1f} (biased by collider)",
+                               f"{causal_samples.mean()*100:+.1f} (suggestive)"],
         'Action': ['Remove from causal models', 'Treat as Factor B in experiment',
                    'Treat as Factor C in experiment', 'Remove from causal models',
                    'Include as confounder', 'Include as confounder', 'Include as confounder',
-                   'Discard — wrong model', 'Label suggestive; run Phase 2 Factor A'],
+                   'Superseded by causal model', 'Suggestive observational estimate; confirmed by Phase 3 experiment'],
     })
 
     out_path = os.path.join(OUTPUT_DIR, 'causal_correction_summary.csv')
@@ -594,7 +592,7 @@ def generate_summary_and_interview_prep(df, wrong_samples, correct_samples):
 
 if __name__ == '__main__':
     print("=" * 70)
-    print("PROPER CAUSAL INFERENCE — CORRECTED FRAMEWORK")
+    print("CAUSAL INFERENCE FRAMEWORK")
     print("Customer Risk & Retention | Google GBS&O Portfolio Project")
     print("=" * 70)
 
@@ -608,8 +606,8 @@ if __name__ == '__main__':
     # ── Step 2: Demonstrate collider bias empirically ─────────────────────────
     demonstrate_collider_bias(df)
 
-    # ── Step 3: Wrong vs. correct model comparison ───────────────────────────
-    wrong_samples, correct_samples = compare_wrong_vs_correct_model(df)
+    # ── Step 3: Naive vs. causal model comparison ────────────────────────────
+    naive_samples, causal_samples = compare_naive_vs_causal_model(df)
 
     # ── Step 4: Multi-treatment observational model ──────────────────────────
     multi_treatment_model(df)
@@ -617,13 +615,13 @@ if __name__ == '__main__':
     # ── Step 5: Experimental design proposal ─────────────────────────────────
     propose_experiment(df)
 
-    # ── Step 6: Summary + interview prep ─────────────────────────────────────
-    generate_summary_and_interview_prep(df, wrong_samples, correct_samples)
+    # ── Step 6: Summary ───────────────────────────────────────────────────────
+    generate_summary_and_interview_prep(df, naive_samples, causal_samples)
 
     print("\n" + "=" * 70)
     print("COMPLETE")
     print("=" * 70)
     print("  variable_causal_roles.png      — variable classification chart")
     print("  collider_stratification.png    — empirical collider bias demo")
-    print("  proper_causal_estimates.png    — wrong vs correct posterior comparison")
+    print("  proper_causal_estimates.png    — naive vs causal posterior comparison")
     print("  causal_correction_summary.csv  — structured output for BI / reporting")

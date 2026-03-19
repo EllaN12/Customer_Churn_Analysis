@@ -219,7 +219,7 @@ true_rates = [
     control_rate - t3_reduction
 ]
 
-# UPDATED: Show directory configuration
+# Show directory configuration
 st.sidebar.markdown("---")
 st.sidebar.subheader("📁 Configuration")
 st.sidebar.markdown(f"""

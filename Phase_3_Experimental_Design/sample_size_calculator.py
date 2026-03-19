@@ -187,7 +187,7 @@ class SampleSizeCalculator:
         Main effects:
         - Contract: 31% reduction (MTM 42.7% → 1-year 11.7%)
         - Payment: 20% reduction (E-check 45.3% → Autopay 25.3%)
-        - Add-ons: 5% reduction (based on corrected estimate)
+        - Add-ons: 5% reduction (causal estimate)
         
         Returns:
         --------

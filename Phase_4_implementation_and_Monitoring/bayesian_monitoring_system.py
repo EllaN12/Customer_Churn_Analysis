@@ -577,12 +577,4 @@ This monitoring system demonstrates:
   - Can integrate with real data pipeline
   - Automated alerts and reporting
 
-In interviews, you can show:
-1. The code (demonstrates Bayesian expertise)
-2. Weekly monitoring charts (visual convergence)
-3. Automated stopping rules (practical decision framework)
-4. Expected early stopping (save time & money)
-
-This shows you don't just design experiments—
-you build systems to monitor and decide optimally.
     """)
