@@ -124,7 +124,7 @@ def main():
         "Baseline Churn Rate (%)",
         min_value=50,
         max_value=90,
-        value=72,
+        value=26.5,
         step=1,
         help="Current churn rate for high-risk customers"
     ) / 100
