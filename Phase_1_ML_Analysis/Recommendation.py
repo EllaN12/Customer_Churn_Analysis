@@ -5,7 +5,7 @@ import os
 
 
 # Importing Data
-path = 'Prediction_Data/churn_prediction_df.pkl'
+path = 'Raw_Data/churn_prediction_df.pkl'
 data_path = os.path.abspath(path)
 
 Churn_data = pd.read_pickle(data_path)
@@ -71,7 +71,7 @@ recommendation_df['contract_label'].unique()
 
 
 #save
-path = 'Prediction_Data/recommendation.csv'
+path = 'Results/recommendation.csv'
 data_path = os.path.abspath(path)
 recommendation_df.to_csv(data_path)
 # %%
