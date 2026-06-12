@@ -122,9 +122,9 @@ def main():
     st.sidebar.subheader("Business Context")
     baseline_churn = st.sidebar.slider(
         "Baseline Churn Rate (%)",
-        min_value=50,
+        min_value=10,
         max_value=90,
-        value=26.5,
+        value=27,
         step=1,
         help="Current churn rate for high-risk customers"
     ) / 100
@@ -150,13 +150,19 @@ def main():
     st.sidebar.markdown("---")
     st.sidebar.subheader("Test Design")
     
-    n_arms = st.sidebar.selectbox(
-        "Number of Treatment Arms",
-        options=[2, 3, 4],
+    def format_arms(n):
+        # Show the full arm line-up for each option, e.g. "Control, T1, T2, T3"
+        return ", ".join(["Control"] + [f"T{i}" for i in range(1, n + 1)])
+
+    n_treatments = st.sidebar.selectbox(
+        "Experiment Arms",
+        options=[1, 2, 3],
         index=2,
-        help="Including control"
+        format_func=format_arms,
+        help="A control arm is always included. The number sets how many treatment arms are added."
     )
-    
+    n_arms = n_treatments + 1  # total arms = treatments + control
+
     sample_size_per_arm = st.sidebar.slider(
         "Sample Size per Arm",
         min_value=50,
@@ -165,14 +171,16 @@ def main():
         step=25,
         help="Number of customers in each treatment group"
     )
-    
+
     st.sidebar.markdown("---")
     st.sidebar.subheader("Treatment Effects")
     st.sidebar.markdown("*Expected churn reduction (absolute %)*")
     
     treatment_effects = [0]  # Control
     treatment_costs = [0]    # Control cost
-    
+
+    st.sidebar.markdown("**Control (baseline)** — 0% effect · $0 cost")
+
     for i in range(1, n_arms):
         col1, col2 = st.sidebar.columns(2)
         
@@ -320,12 +328,19 @@ def main():
         st.plotly_chart(fig, use_container_width=True)
         
         # Recommendation
+        at_size = df_power[df_power['Sample Size'] == sample_size_per_arm]
+        power_lines = []
+        for arm in range(1, n_arms):
+            arm_power = at_size[at_size['Arm'].str.contains(f'Treatment {arm} ')]['Power']
+            if not arm_power.empty:
+                power_lines.append(f"- Treatment {arm}: {arm_power.values[0]:.1%} power")
+        meets = at_size['Power'].min() >= target_power if not at_size.empty else False
+
         st.info(f"""
         **💡 Recommendation:** With {sample_size_per_arm} customers per arm, you have approximately:
-        - Treatment 1: {df_power[(df_power['Sample Size'] == sample_size_per_arm) & (df_power['Arm'].str.contains('Treatment 1'))]['Power'].values[0]:.1%} power
-        - Treatment 2: {df_power[(df_power['Sample Size'] == sample_size_per_arm) & (df_power['Arm'].str.contains('Treatment 2'))]['Power'].values[0]:.1%} power (if 3+ arms)
-        
-        This {'✅ meets' if df_power[(df_power['Sample Size'] == sample_size_per_arm)]['Power'].min() >= target_power else '⚠️ does not meet'} your {target_power:.0%} power target.
+        {chr(10).join(power_lines)}
+
+        This {'✅ meets' if meets else '⚠️ does not meet'} your {target_power:.0%} power target.
         """)
     
     # =========================================================================
@@ -354,7 +369,7 @@ def main():
         
         # Simulate data
         n_observed = int(weeks_elapsed * 25)  # 25 per week
-        
+
         # Generate simulated outcomes
         results = []
         posteriors = {}
@@ -644,9 +659,9 @@ def main():
         
         # Generate data for selected week
         n_cumulative = int(max_weeks * 25)
-        
+
         fig = go.Figure()
-        
+
         x = np.linspace(0, 1, 1000)
         
         for arm in range(n_arms):
