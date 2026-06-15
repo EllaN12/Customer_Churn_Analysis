@@ -172,9 +172,11 @@ Customer_Churn_Analysis/
 │       └── logs/                          ← Randomisation & assignment logs
 │
 ├── Phase_5_Depolyment guide/
-│   ├── Dockerfile                         ← Python 3.11-slim container
+│   ├── Dockerfile                         ← Python 3.9-slim container
+│   ├── .dockerignore                      ← Build context exclusions
 │   ├── requirements.txt                   ← Pinned dependencies
 │   ├── deploy_to_cloud_run.sh             ← GCP Cloud Run deployment script
+│   ├── DEPLOYMENT.md                      ← Step-by-step Cloud Run protocol
 │   ├── streamlit_dashboard.py             ← Production dashboard entry point
 │   └── Results/
 │       └── executive_dashboard_week_6.png
@@ -387,7 +389,7 @@ Features: Real-time posterior distributions, ROPE visualisation, preset selector
 
 **Scripts:** `Phase_5_Depolyment guide/`
 
-**Live demo:** https://bayesian-dashboard-303092178542.us-central1.run.app
+**Live demo:** https://bayesian-dashboard-128505233033.us-central1.run.app
 
 ### Architecture
 
