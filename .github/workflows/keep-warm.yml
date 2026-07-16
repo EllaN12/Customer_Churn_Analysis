@@ -1,0 +1,30 @@
+# Keeps all Cloud Run portfolio apps warm by pinging them every 10 minutes,
+# so visitors don't hit a 7-40s cold start. Runs free on a public repo.
+#
+# Note: GitHub pauses scheduled workflows after 60 days without repo activity;
+# any commit (or re-enabling from the Actions tab) resumes it.
+name: keep-warm
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Cloud Run services
+        run: |
+          # Streamlit apps expose /_stcore/health; backend-els is not Streamlit,
+          # so it is pinged at its root path.
+          for url in \
+            "https://bayesian-dashboard-56ihiiew2a-uc.a.run.app/_stcore/health" \
+            "https://bikes-forecast-6trxjbynbq-uc.a.run.app/_stcore/health" \
+            "https://us-rental-market-paus442sna-uc.a.run.app/_stcore/health" \
+            "https://frontend-els-73ttnprkbq-uc.a.run.app/_stcore/health" \
+            "https://finlens-app-xztjb4q4ia-uc.a.run.app/_stcore/health" \
+            "https://backend-els-73ttnprkbq-uc.a.run.app/"; do
+            code=$(curl -s -o /dev/null -m 60 -w "%{http_code}" "$url" || echo "timeout")
+            echo "$url -> $code"
+          done
