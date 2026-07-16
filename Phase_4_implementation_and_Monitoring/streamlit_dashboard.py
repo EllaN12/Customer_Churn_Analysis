@@ -104,8 +104,113 @@ def calculate_sample_size(effect_size, alpha=0.05, power=0.8, baseline=None):
     p_avg = (p1 + p2) / 2
     
     n = ((z_alpha + z_beta)**2 * 2 * p_avg * (1 - p_avg)) / (effect_size**2)
-    
+
     return int(np.ceil(n))
+
+
+# =============================================================================
+# Cached computations — Streamlit reruns the whole script on every widget
+# interaction, so anything expensive lives here and only recomputes when its
+# inputs actually change.
+# =============================================================================
+
+@st.cache_data
+def compute_power_curves(baseline, alpha_level, effects):
+    """Power vs sample size for each treatment arm (vectorized)."""
+    sample_sizes = np.arange(50, 501, 25)
+    z_alpha = stats.norm.ppf(1 - alpha_level / 2)
+    frames = []
+    for arm, effect in enumerate(effects, start=1):
+        e = abs(effect)
+        z_beta = (e * np.sqrt(sample_sizes)) / np.sqrt(2 * baseline * (1 - baseline))
+        frames.append(pd.DataFrame({
+            'Sample Size': sample_sizes,
+            'Arm': f'Treatment {arm} ({e:.0%})',
+            'Power': stats.norm.cdf(z_beta - z_alpha),
+        }))
+    return pd.concat(frames, ignore_index=True)
+
+
+@st.cache_data
+def simulate_test_results(effects, baseline, n_observed, prior_alpha, prior_beta, seed=0):
+    """Simulate outcomes and Beta posteriors for every arm (seeded so reruns are stable)."""
+    rng = np.random.default_rng(seed)
+    posteriors = {}
+    rows = []
+    for arm, effect in enumerate(effects):
+        true_rate = float(np.clip(baseline + effect, 0, 1))
+        n_churned = int(rng.binomial(n_observed, true_rate))
+        post_alpha, post_beta = compute_beta_posterior(
+            prior_alpha, prior_beta, n_churned, n_observed - n_churned
+        )
+        posteriors[arm] = {
+            'alpha': post_alpha,
+            'beta': post_beta,
+            'samples': rng.beta(post_alpha, post_beta, 10000),
+        }
+        rows.append({
+            'Arm': 'Control' if arm == 0 else f'Treatment {arm}',
+            'Customers': n_observed,
+            'Churned': n_churned,
+            'Observed Rate': n_churned / n_observed,
+            'Posterior Mean': post_alpha / (post_alpha + post_beta),
+            '95% CI Lower': stats.beta.ppf(0.025, post_alpha, post_beta),
+            '95% CI Upper': stats.beta.ppf(0.975, post_alpha, post_beta),
+        })
+    return posteriors, pd.DataFrame(rows)
+
+
+@st.cache_data
+def build_npv_sensitivity(fleet_size, monthly_revenue, avg_retention_months,
+                          intervention_cost, expected_effect):
+    """NPV grid over adoption-rate and effect-size scenarios (vectorized)."""
+    adoption_scenarios = np.linspace(0.15, 0.50, 20)
+    effect_scenarios = np.linspace(max(0.05, expected_effect * 0.5),
+                                   min(0.40, expected_effect * 1.5), 20)
+    adopters = fleet_size * adoption_scenarios
+    npv = np.outer(
+        effect_scenarios * monthly_revenue * avg_retention_months - intervention_cost,
+        adopters
+    )
+    return pd.DataFrame(npv, index=effect_scenarios, columns=adoption_scenarios)
+
+
+@st.cache_data
+def simulate_posterior_params(effects, baseline, n_observed, prior_alpha, prior_beta, seed=1):
+    """Posterior Beta parameters per arm for the visualizer (seeded)."""
+    rng = np.random.default_rng(seed)
+    params = []
+    for effect in effects:
+        true_rate = float(np.clip(baseline + effect, 0, 1))
+        n_churned = int(rng.binomial(n_observed, true_rate))
+        post_alpha, post_beta = compute_beta_posterior(
+            prior_alpha, prior_beta, n_churned, n_observed - n_churned
+        )
+        params.append((post_alpha, post_beta, true_rate))
+    return params
+
+
+@st.cache_data
+def compute_rope_analysis(ctrl_true, trt_true, n_observed, prior_alpha, prior_beta, seed=2):
+    """Posterior difference (control − treatment) KDE curve and ROPE probability masses."""
+    rng = np.random.default_rng(seed)
+    ctrl_churned = int(rng.binomial(n_observed, ctrl_true))
+    trt_churned = int(rng.binomial(n_observed, trt_true))
+    ctrl_samp = rng.beta(prior_alpha + ctrl_churned,
+                         prior_beta + n_observed - ctrl_churned, 10000)
+    trt_samp = rng.beta(prior_alpha + trt_churned,
+                        prior_beta + n_observed - trt_churned, 10000)
+    diff_samp = ctrl_samp - trt_samp  # positive = treatment reduces churn
+
+    rope_low, rope_high = -0.02, 0.02
+    pct_in_rope = ((diff_samp >= rope_low) & (diff_samp <= rope_high)).mean()
+    pct_above_rope = (diff_samp > rope_high).mean()
+    pct_below_rope = (diff_samp < rope_low).mean()
+
+    diff_x = np.linspace(diff_samp.min(), diff_samp.max(), 400)
+    diff_y = stats.gaussian_kde(diff_samp)(diff_x)
+
+    return diff_x, diff_y, pct_in_rope, pct_above_rope, pct_below_rope
 
 
 # =============================================================================
@@ -315,27 +420,7 @@ def main():
         # Power curve
         st.subheader("Power Curves by Treatment Arm")
         
-        # Simulate power for different sample sizes
-        sample_sizes = np.arange(50, 501, 25)
-        
-        power_data = []
-        for n in sample_sizes:
-            for arm in range(1, n_arms):
-                # Simplified power calculation
-                effect = abs(treatment_effects[arm])
-                
-                # Using normal approximation
-                z_alpha = stats.norm.ppf(1 - alpha_level/2)
-                z_beta = (effect * np.sqrt(n)) / np.sqrt(2 * baseline_churn * (1 - baseline_churn))
-                power = stats.norm.cdf(z_beta - z_alpha)
-                
-                power_data.append({
-                    'Sample Size': n,
-                    'Arm': f'Treatment {arm} ({abs(treatment_effects[arm]):.0%})',
-                    'Power': power
-                })
-        
-        df_power = pd.DataFrame(power_data)
+        df_power = compute_power_curves(baseline_churn, alpha_level, tuple(treatment_effects[1:]))
         
         fig = px.line(
             df_power,
@@ -390,40 +475,10 @@ def main():
         # Simulate data
         n_observed = int(weeks_elapsed * 25)  # 25 per week
         
-        # Generate simulated outcomes
-        results = []
-        posteriors = {}
-        
-        for arm in range(n_arms):
-            true_churn_rate = baseline_churn + treatment_effects[arm]
-            true_churn_rate = np.clip(true_churn_rate, 0, 1)
-            
-            # Simulate outcomes
-            churned = np.random.binomial(1, true_churn_rate, size=n_observed)
-            n_churned = churned.sum()
-            
-            # Compute posterior
-            post_alpha, post_beta = compute_beta_posterior(
-                prior_alpha, prior_beta, n_churned, n_observed - n_churned
-            )
-            
-            posteriors[arm] = {
-                'alpha': post_alpha,
-                'beta': post_beta,
-                'samples': sample_beta_posterior(post_alpha, post_beta)
-            }
-            
-            results.append({
-                'Arm': f'{"Control" if arm == 0 else f"Treatment {arm}"}',
-                'Customers': n_observed,
-                'Churned': n_churned,
-                'Observed Rate': n_churned / n_observed,
-                'Posterior Mean': post_alpha / (post_alpha + post_beta),
-                '95% CI Lower': stats.beta.ppf(0.025, post_alpha, post_beta),
-                '95% CI Upper': stats.beta.ppf(0.975, post_alpha, post_beta)
-            })
-        
-        df_results = pd.DataFrame(results)
+        # Generate simulated outcomes (cached & seeded — recomputes only when inputs change)
+        posteriors, df_results = simulate_test_results(
+            tuple(treatment_effects), baseline_churn, n_observed, prior_alpha, prior_beta
+        )
         
         # Display results table
         st.dataframe(
@@ -602,35 +657,9 @@ def main():
         # Uncertainty analysis
         st.subheader("Sensitivity Analysis")
         
-        # Vary key assumptions
-        adoption_scenarios = np.linspace(0.15, 0.50, 20)
-        effect_scenarios = np.linspace(max(0.05, expected_effect * 0.5), 
-                                      min(0.40, expected_effect * 1.5), 20)
-        
-        npv_grid = []
-        
-        for adopt in adoption_scenarios:
-            for effect in effect_scenarios:
-                adopters_scenario = fleet_size * adopt
-                retained_scenario = adopters_scenario * effect
-                revenue_scenario = retained_scenario * monthly_revenue * avg_retention_months
-                cost_scenario = adopters_scenario * intervention_cost
-                npv_scenario = revenue_scenario - cost_scenario
-                
-                npv_grid.append({
-                    'Adoption Rate': adopt,
-                    'Churn Reduction': effect,
-                    'NPV': npv_scenario
-                })
-        
-        df_sensitivity = pd.DataFrame(npv_grid)
-        
-        # Create heatmap
-        pivot_table = df_sensitivity.pivot_table(
-            values='NPV',
-            index='Churn Reduction',
-            columns='Adoption Rate',
-            aggfunc='mean'
+        pivot_table = build_npv_sensitivity(
+            fleet_size, monthly_revenue, avg_retention_months,
+            intervention_cost, expected_effect
         )
         
         fig = go.Figure(data=go.Heatmap(
@@ -684,20 +713,11 @@ def main():
         
         x = np.linspace(0, 1, 1000)
         
-        for arm in range(n_arms):
-            true_rate = np.clip(baseline_churn + treatment_effects[arm], 0, 1)
-            
-            # Simulate outcomes
-            churned = np.random.binomial(1, true_rate, size=n_cumulative)
-            n_churned = churned.sum()
-            
-            # Posterior
-            post_alpha, post_beta = compute_beta_posterior(
-                prior_alpha, prior_beta,
-                n_churned,
-                n_cumulative - n_churned
-            )
-            
+        posterior_params = simulate_posterior_params(
+            tuple(treatment_effects), baseline_churn, n_cumulative, prior_alpha, prior_beta
+        )
+
+        for arm, (post_alpha, post_beta, true_rate) in enumerate(posterior_params):
             # PDF
             y = stats.beta.pdf(x, post_alpha, post_beta)
             
@@ -735,18 +755,10 @@ def main():
             line=dict(dash='dash', width=2)
         ))
         
-        # Posterior for treatment 1
+        # Posterior for treatment 1 (reuse the cached simulation so both charts agree)
         arm_to_show = min(1, n_arms - 1)
-        true_rate = np.clip(baseline_churn + treatment_effects[arm_to_show], 0, 1)
-        churned = np.random.binomial(1, true_rate, size=n_cumulative)
-        n_churned = churned.sum()
-        
-        post_alpha_show, post_beta_show = compute_beta_posterior(
-            prior_alpha, prior_beta,
-            n_churned,
-            n_cumulative - n_churned
-        )
-        
+        post_alpha_show, post_beta_show, true_rate = posterior_params[arm_to_show]
+
         post_y = stats.beta.pdf(x, post_alpha_show, post_beta_show)
         fig2.add_trace(go.Scatter(
             x=x, y=post_y,
@@ -790,36 +802,16 @@ def main():
         )
 
         if n_arms >= 2:
-            # Re-simulate control and treatment 1 posteriors
-            ctrl_true = np.clip(baseline_churn, 0, 1)
-            trt_true  = np.clip(baseline_churn + treatment_effects[min(1, n_arms - 1)], 0, 1)
-
-            ctrl_churned = np.random.binomial(1, ctrl_true, size=n_cumulative)
-            trt_churned  = np.random.binomial(1, trt_true,  size=n_cumulative)
-
-            ctrl_pa, ctrl_pb = compute_beta_posterior(prior_alpha, prior_beta,
-                                                       ctrl_churned.sum(),
-                                                       n_cumulative - ctrl_churned.sum())
-            trt_pa, trt_pb   = compute_beta_posterior(prior_alpha, prior_beta,
-                                                       trt_churned.sum(),
-                                                       n_cumulative - trt_churned.sum())
-
-            ctrl_samp = sample_beta_posterior(ctrl_pa, ctrl_pb)
-            trt_samp  = sample_beta_posterior(trt_pa,  trt_pb)
-            diff_samp = ctrl_samp - trt_samp  # positive = treatment reduces churn
+            ctrl_true = float(np.clip(baseline_churn, 0, 1))
+            trt_true = float(np.clip(baseline_churn + treatment_effects[min(1, n_arms - 1)], 0, 1))
 
             rope_low, rope_high = -0.02, 0.02
-            pct_in_rope   = ((diff_samp >= rope_low) & (diff_samp <= rope_high)).mean()
-            pct_above_rope = (diff_samp > rope_high).mean()
-            pct_below_rope = (diff_samp < rope_low).mean()
+            diff_x, diff_y, pct_in_rope, pct_above_rope, pct_below_rope = compute_rope_analysis(
+                ctrl_true, trt_true, n_cumulative, prior_alpha, prior_beta
+            )
 
             # Plot the posterior difference with ROPE shading
             fig_rope = go.Figure()
-
-            diff_x = np.linspace(diff_samp.min(), diff_samp.max(), 400)
-            from scipy.stats import gaussian_kde
-            kde = gaussian_kde(diff_samp)
-            diff_y = kde(diff_x)
 
             # Full distribution
             fig_rope.add_trace(go.Scatter(

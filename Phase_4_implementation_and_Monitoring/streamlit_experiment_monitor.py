@@ -77,42 +77,44 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
+@st.cache_data
 def generate_simulated_data(week, n_per_arm=50, true_rates=None):
-    """Generate simulated experiment data"""
+    """Generate simulated experiment data (vectorized, seeded per week, cached)"""
     if true_rates is None:
-        true_rates = [0.609, 0.509, 0.459, 0.409]  # Early tenure experiment
-    
-    data = []
+        true_rates = (0.609, 0.509, 0.459, 0.409)  # Early tenure experiment
+
+    rng = np.random.default_rng(42 + week)
+    n_total = n_per_arm * week
+    frames = []
     for arm, rate in enumerate(true_rates):
-        n_total = n_per_arm * week
-        churned = np.random.binomial(1, rate, size=n_total)
-        for outcome in churned:
-            data.append({
-                'arm': arm,
-                'arm_name': 'Control' if arm == 0 else f'Treatment {arm}',
-                'outcome': outcome
-            })
-    
-    return pd.DataFrame(data)
+        frames.append(pd.DataFrame({
+            'arm': arm,
+            'arm_name': 'Control' if arm == 0 else f'Treatment {arm}',
+            'outcome': rng.binomial(1, rate, size=n_total)
+        }))
+
+    return pd.concat(frames, ignore_index=True)
 
 
+@st.cache_data
 def calculate_posteriors(data, n_samples=10000):
-    """Calculate Bayesian posteriors for each arm"""
+    """Calculate Bayesian posteriors for each arm (seeded, cached)"""
+    rng = np.random.default_rng(0)
     posteriors = {}
-    
+
     for arm in data['arm'].unique():
         arm_data = data[data['arm'] == arm]
         n = len(arm_data)
         successes = arm_data['outcome'].sum()
-        
+
         # Beta posterior
         alpha = 2 + successes
         beta = 2 + (n - successes)
-        
+
         # Sample from posterior
-        samples = np.random.beta(alpha, beta, n_samples)
+        samples = rng.beta(alpha, beta, n_samples)
         posteriors[arm] = samples
-    
+
     return posteriors
 
 
@@ -243,9 +245,8 @@ st.markdown(f"**Experiment:** {experiment} | **Week {week}** | **Status:** Activ
 
 st.markdown("---")
 
-# Generate data
-np.random.seed(42 + week)  # Different seed each week
-data = generate_simulated_data(week, n_per_arm_per_week, true_rates)
+# Generate data (cached — recomputed only when week/sample-size/rates change)
+data = generate_simulated_data(week, n_per_arm_per_week, tuple(true_rates))
 
 # Calculate posteriors
 posteriors = calculate_posteriors(data)
@@ -331,13 +332,15 @@ with col1:
     
     colors = ['#ff7f0e', '#2ca02c', '#1f77b4', '#d62728']
     
+    # Bin server-side so the page gets ~50 points per arm instead of 10,000 raw samples
     for arm, samples in posteriors.items():
         name = 'Control' if arm == 0 else f'Treatment {arm}'
-        fig.add_trace(go.Histogram(
-            x=samples,
+        counts, edges = np.histogram(samples, bins=50, density=True)
+        fig.add_trace(go.Bar(
+            x=(edges[:-1] + edges[1:]) / 2,
+            y=counts,
             name=name,
             opacity=0.7,
-            nbinsx=50,
             marker_color=colors[arm]
         ))
     

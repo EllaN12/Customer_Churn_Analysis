@@ -1,0 +1,10 @@
+# Streamlit performance settings — free wins, no infra changes needed.
+
+[browser]
+# Skip the telemetry call on startup
+gatherUsageStats = false
+
+[server]
+# Uncomment when deployed (e.g. Streamlit Community Cloud / a server):
+# disables file-watching overhead. Leave commented locally so hot-reload works.
+# fileWatcherType = "none"
