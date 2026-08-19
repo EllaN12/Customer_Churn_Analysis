@@ -1,0 +1,160 @@
+{
+  "model_details": {
+    "name": "Telco Customer Churn \u2014 H2O AutoML Ensemble with Bayesian Causal Validation",
+    "overview": "A five-phase pipeline on 7,043 Telco customers x 21 features: PySpark EDA and H2O AutoML prediction, Bayesian causal validation with an explicit collider-bias correction, power-analyzed experimental design, a hierarchical Bayesian A/B testing engine with sequential monitoring, and Docker/GCP Cloud Run deployment. Baseline churn is 26.5%, representing $1.53M of lifetime value at risk.",
+    "documentation": "Dataset: Kaggle Telco Customer Churn (7,043 customers x 21 features) (https://www.kaggle.com/datasets/blastchar/telco-customer-churn) \u2014 Sensitive data: Contains customer demographic attributes \u2014 SeniorCitizen, Gender, Partner, Dependents \u2014 which are used as pre-treatment adjustment variables in the causal model and are also present in the predictive feature set.",
+    "owners": [
+      {
+        "name": "Ella Ndalla",
+        "contact": "ndallaella@gmail.com"
+      }
+    ],
+    "version": {
+      "name": "1.0.0"
+    },
+    "licenses": [
+      {
+        "identifier": "MIT"
+      }
+    ],
+    "references": [
+      {
+        "reference": "https://www.kaggle.com/datasets/blastchar/telco-customer-churn"
+      }
+    ],
+    "citations": [
+      {
+        "citation": "Ella Ndalla. Telco Customer Churn \u2014 H2O AutoML Ensemble with Bayesian Causal Validation. GitHub repository: Customer_Churn_Analysis."
+      }
+    ]
+  },
+  "model_parameters": {
+    "data": [
+      {
+        "name": "Kaggle Telco Customer Churn (7,043 customers x 21 features)",
+        "link": "https://www.kaggle.com/datasets/blastchar/telco-customer-churn",
+        "sensitive": {
+          "sensitive_data": [
+            "Contains customer demographic attributes \u2014 SeniorCitizen, Gender, Partner, Dependents \u2014 which are used as pre-treatment adjustment variables in the causal model and are also present in the predictive feature set."
+          ]
+        }
+      }
+    ]
+  },
+  "quantitative_analysis": {
+    "performance_metrics": [
+      {
+        "type": "AUC-ROC (H2O Stacked Ensemble)",
+        "value": "93.4%"
+      },
+      {
+        "type": "AUC-PR (H2O Stacked Ensemble)",
+        "value": "96.72%"
+      },
+      {
+        "type": "Recall on churners",
+        "value": "~90.5%"
+      },
+      {
+        "type": "Precision",
+        "value": "~78%"
+      },
+      {
+        "type": "AUC-ROC (PySpark Decision Tree baseline)",
+        "value": "72.0%"
+      },
+      {
+        "type": "AUC-PR (PySpark Decision Tree baseline)",
+        "value": "52.6%"
+      },
+      {
+        "type": "Baseline churn rate",
+        "value": "26.5%"
+      },
+      {
+        "type": "Causal effect of service add-on bundle (corrected)",
+        "value": "-5.8pp, 95% CI [-8.2%, -3.4%]"
+      },
+      {
+        "type": "P(add-ons reduce churn by 5%+)",
+        "value": "87%"
+      },
+      {
+        "type": "Naive (collider-biased) add-on effect",
+        "value": "-0.2pp"
+      },
+      {
+        "type": "Early tenure <=40 days (correlational)",
+        "value": "+52pp \u2014 requires experiment"
+      },
+      {
+        "type": "Experiment design power",
+        "value": "95% Bayesian power, 3 prioritized tests"
+      }
+    ]
+  },
+  "considerations": {
+    "users": [
+      {
+        "description": "Retention / CRM teams (illustrative)"
+      },
+      {
+        "description": "Data scientists studying causal ML workflows"
+      }
+    ],
+    "use_cases": [
+      {
+        "description": "Predicting churn risk to prioritize retention outreach."
+      },
+      {
+        "description": "Estimating the causal effect of service add-on bundles on churn."
+      },
+      {
+        "description": "Designing and sequentially monitoring randomized retention experiments."
+      }
+    ],
+    "limitations": [
+      {
+        "description": "Predictive accuracy does not imply causal validity \u2014 the 93.4% AUC ensemble is not a guide to which interventions will work."
+      },
+      {
+        "description": "The corrected causal model conditions ONLY on exogenous pre-treatment demographics (SeniorCitizen, Dependents, Partner, Gender). Tenure is a collider, contract type and payment method are other treatments, and charges are mediators \u2014 all are deliberately excluded, and observational limits remain even after correction."
+      },
+      {
+        "description": "The strongest signal found (+52pp churn in the first 40 days) is NOT causally identified and requires a randomized experiment before acting on it."
+      },
+      {
+        "description": "Static 2018-era Kaggle snapshot from one telco; no temporal validation or drift testing against live data."
+      },
+      {
+        "description": "SMOTE oversampling can distort predicted probability calibration."
+      }
+    ],
+    "tradeoffs": [
+      {
+        "description": "The H2O stacked ensemble is markedly more accurate than the PySpark decision tree (93.4% vs 72.0% AUC) at the cost of interpretability and heavier serving infrastructure."
+      },
+      {
+        "description": "High recall on churners (~90.5%) with ~78% precision means a meaningful share of retention spend goes to customers who would have stayed."
+      },
+      {
+        "description": "Correcting collider bias moves the add-on effect from -0.2pp to -5.8pp \u2014 the methodologically correct estimate is far larger, and the naive one would have led to abandoning a working lever."
+      }
+    ],
+    "ethical_considerations": [
+      {
+        "name": "Demographic features (gender, senior citizen status, dependents, partner) sit in both the prediction and adjustment sets, so retention offers scored by this model could distribute unevenly across protected groups.",
+        "mitigation_strategy": "Demographics are used as backdoor-criterion adjustment variables rather than targeting rules; the project culminates in randomized experiments with stratified randomization rather than model-score-driven rollout."
+      },
+      {
+        "name": "Collider bias silently inverting the estimated effect direction.",
+        "mitigation_strategy": "Collider bias was detected and empirically confirmed via stratification reversal; the corrected specification is the documented centerpiece of the project."
+      },
+      {
+        "name": "Acting on the strong early-tenure correlation without identification.",
+        "mitigation_strategy": "Explicitly flagged as 'requires experiment'; three prioritized randomized tests were designed at 95% Bayesian power with ROPE-based stopping rules."
+      }
+    ]
+  },
+  "schema_version": "0.0.2"
+}

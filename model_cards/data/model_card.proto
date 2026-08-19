@@ -1,0 +1,51 @@
+
+Ë
+LTelco Customer Churn â€” H2O AutoML Ensemble with Bayesian Causal Validation‚A five-phase pipeline on 7,043 Telco customers x 21 features: PySpark EDA and H2O AutoML prediction, Bayesian causal validation with an explicit collider-bias correction, power-analyzed experimental design, a hierarchical Bayesian A/B testing engine with sequential monitoring, and Docker/GCP Cloud Run deployment. Baseline churn is 26.5%, representing $1.53M of lifetime value at risk.òDataset: Kaggle Telco Customer Churn (7,043 customers x 21 features) (https://www.kaggle.com/datasets/blastchar/telco-customer-churn) â€” Sensitive data: Contains customer demographic attributes â€” SeniorCitizen, Gender, Partner, Dependents â€” which are used as pre-treatment adjustment variables in the causal model and are also present in the predictive feature set."#
+Ella Ndallandallaella@gmail.com*
+1.0.02
+MIT:@
+>https://www.kaggle.com/datasets/blastchar/telco-customer-churnB‰†Ella Ndalla. Telco Customer Churn â€” H2O AutoML Ensemble with Bayesian Causal Validation. GitHub repository: Customer_Churn_Analysis.ÞÛ
+;Kaggle Telco Customer Churn (7,043 customers x 21 features)>https://www.kaggle.com/datasets/blastchar/telco-customer-churnÛ
+ØContains customer demographic attributes â€” SeniorCitizen, Gender, Partner, Dependents â€” which are used as pre-treatment adjustment variables in the causal model and are also present in the predictive feature set.À
+'
+AUC-ROC (H2O Stacked Ensemble)93.4%
+'
+AUC-PR (H2O Stacked Ensemble)96.72%
+
+Recall on churners~90.5%
+
+	Precision~78%
+1
+(AUC-ROC (PySpark Decision Tree baseline)72.0%
+0
+'AUC-PR (PySpark Decision Tree baseline)52.6%
+
+Baseline churn rate26.5%
+S
+2Causal effect of service add-on bundle (corrected)-5.8pp, 95% CI [-8.2%, -3.4%]
+%
+P(add-ons reduce churn by 5%+)87%
+/
+%Naive (collider-biased) add-on effect-0.2pp
+G
+&Early tenure <=40 days (correlational)+52pp â€” requires experiment
+B
+Experiment design power'95% Bayesian power, 3 prioritized tests"°
+&
+$Retention / CRM teams (illustrative)
+.
+,Data scientists studying causal ML workflows9
+7Predicting churn risk to prioritize retention outreach.B
+@Estimating the causal effect of service add-on bundles on churn.I
+GDesigning and sequentially monitoring randomized retention experiments.€
+~Predictive accuracy does not imply causal validity â€” the 93.4% AUC ensemble is not a guide to which interventions will work.Ä
+ÁThe corrected causal model conditions ONLY on exogenous pre-treatment demographics (SeniorCitizen, Dependents, Partner, Gender). Tenure is a collider, contract type and payment method are other treatments, and charges are mediators â€” all are deliberately excluded, and observational limits remain even after correction.•
+’The strongest signal found (+52pp churn in the first 40 days) is NOT causally identified and requires a randomized experiment before acting on it.l
+jStatic 2018-era Kaggle snapshot from one telco; no temporal validation or drift testing against live data.C
+ASMOTE oversampling can distort predicted probability calibration."­
+ªThe H2O stacked ensemble is markedly more accurate than the PySpark decision tree (93.4% vs 72.0% AUC) at the cost of interpretability and heavier serving infrastructure."Œ
+‰High recall on churners (~90.5%) with ~78% precision means a meaningful share of retention spend goes to customers who would have stayed."Â
+¿Correcting collider bias moves the add-on effect from -0.2pp to -5.8pp â€” the methodologically correct estimate is far larger, and the naive one would have led to abandoning a working lever.*¯
+ÕDemographic features (gender, senior citizen status, dependents, partner) sit in both the prediction and adjustment sets, so retention offers scored by this model could distribute unevenly across protected groups.ÔDemographics are used as backdoor-criterion adjustment variables rather than targeting rules; the project culminates in randomized experiments with stratified randomization rather than model-score-driven rollout.*à
+@Collider bias silently inverting the estimated effect direction.›Collider bias was detected and empirically confirmed via stratification reversal; the corrected specification is the documented centerpiece of the project.*Ý
+EActing on the strong early-tenure correlation without identification.“Explicitly flagged as 'requires experiment'; three prioritized randomized tests were designed at 95% Bayesian power with ROPE-based stopping rules.

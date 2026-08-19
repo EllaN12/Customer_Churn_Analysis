@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+<html lang="en">
+<head>
+<style>
+  h1 {text-align: center;}
+  .row {
+    display: flex;
+  }
+  .col {
+    flex: 1;
+  }
+  .card {
+    padding: 1em;
+    border: 1px solid #DADCE0;
+    margin: 10px;
+  }
+  .img-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    text-align: center;
+  }
+  .img-item {
+    flex: 1;
+  }
+  .center {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  table {
+    margin-bottom: 10px;
+  }
+  table th {
+    background: #eee;
+  }
+  table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+  }
+  th, td {
+    border: 1px solid #ccc;
+    height: 30px;
+    text-align: left;
+    padding: 5px 10px
+  }
+  caption { font-weight: bold; }
+</style>
+<title>
+  Model Card for Telco Customer Churn — H2O AutoML Ensemble with Bayesian Causal Validation
+</title>
+</head>
+<body>
+  <h1>
+    Model Card for Telco Customer Churn — H2O AutoML Ensemble with Bayesian Causal Validation
+  </h1>
+    <div class="row">
+    
+      <div class="col card">
+        <h2>Model Details</h2>
+          <h3>Overview</h3>
+              A five-phase pipeline on 7,043 Telco customers x 21 features: PySpark EDA and H2O AutoML prediction, Bayesian causal validation with an explicit collider-bias correction, power-analyzed experimental design, a hierarchical Bayesian A/B testing engine with sequential monitoring, and Docker/GCP Cloud Run deployment. Baseline churn is 26.5%, representing $1.53M of lifetime value at risk.
+          <h3>Version</h3>
+              
+  
+    <div>name: 1.0.0</div>
+
+              
+  
+
+              
+  
+
+          
+          <h3>Documentation</h3>
+              Dataset: Kaggle Telco Customer Churn (7,043 customers x 21 features) (https://www.kaggle.com/datasets/blastchar/telco-customer-churn) — Sensitive data: Contains customer demographic attributes — SeniorCitizen, Gender, Partner, Dependents — which are used as pre-treatment adjustment variables in the causal model and are also present in the predictive feature set.
+          <h3>Owners</h3>
+            
+              Ella Ndalla, ndallaella@gmail.com
+            
+          
+          
+            <h3>Licenses</h3>
+              <ul>
+
+                <li>MIT</li>
+
+              </ul>
+          
+            <h3>References</h3>
+              <ul>
+              
+                <li><a href="https://www.kaggle.com/datasets/blastchar/telco-customer-churn">https://www.kaggle.com/datasets/blastchar/telco-customer-churn</a></li>
+              
+              </ul>
+          
+            <h3>Citations</h3>
+              <ul>
+              
+                <li>Ella Ndalla. Telco Customer Churn — H2O AutoML Ensemble with Bayesian Causal Validation. GitHub repository: Customer_Churn_Analysis.</li>
+              
+              </ul>
+        </div>
+      
+      
+      
+      <div class="col card">
+        <h2>Considerations</h2>
+          
+            <h3>Intended Users</h3>
+              
+  
+  <ul>
+  
+    <li>Retention / CRM teams (illustrative)</li>
+  
+    <li>Data scientists studying causal ML workflows</li>
+  
+  </ul>
+
+          
+          
+            <h3>Use Cases</h3>
+              
+  
+  <ul>
+  
+    <li>Predicting churn risk to prioritize retention outreach.</li>
+  
+    <li>Estimating the causal effect of service add-on bundles on churn.</li>
+  
+    <li>Designing and sequentially monitoring randomized retention experiments.</li>
+  
+  </ul>
+
+          
+          
+            <h3>Limitations</h3>
+              
+  
+  <ul>
+  
+    <li>Predictive accuracy does not imply causal validity — the 93.4% AUC ensemble is not a guide to which interventions will work.</li>
+  
+    <li>The corrected causal model conditions ONLY on exogenous pre-treatment demographics (SeniorCitizen, Dependents, Partner, Gender). Tenure is a collider, contract type and payment method are other treatments, and charges are mediators — all are deliberately excluded, and observational limits remain even after correction.</li>
+  
+    <li>The strongest signal found (+52pp churn in the first 40 days) is NOT causally identified and requires a randomized experiment before acting on it.</li>
+  
+    <li>Static 2018-era Kaggle snapshot from one telco; no temporal validation or drift testing against live data.</li>
+  
+    <li>SMOTE oversampling can distort predicted probability calibration.</li>
+  
+  </ul>
+
+          
+          
+            <h3>Tradeoffs</h3>
+              
+  
+  <ul>
+  
+    <li>The H2O stacked ensemble is markedly more accurate than the PySpark decision tree (93.4% vs 72.0% AUC) at the cost of interpretability and heavier serving infrastructure.</li>
+  
+    <li>High recall on churners (~90.5%) with ~78% precision means a meaningful share of retention spend goes to customers who would have stayed.</li>
+  
+    <li>Correcting collider bias moves the add-on effect from -0.2pp to -5.8pp — the methodologically correct estimate is far larger, and the naive one would have led to abandoning a working lever.</li>
+  
+  </ul>
+
+          
+          
+            <h3>Ethical Considerations</h3>
+              <ul>
+                <li>
+                  <div>Risk: Demographic features (gender, senior citizen status, dependents, partner) sit in both the prediction and adjustment sets, so retention offers scored by this model could distribute unevenly across protected groups.</div>
+                  <div>Mitigation Strategy: Demographics are used as backdoor-criterion adjustment variables rather than targeting rules; the project culminates in randomized experiments with stratified randomization rather than model-score-driven rollout.</div>
+                </li>
+                <li>
+                  <div>Risk: Collider bias silently inverting the estimated effect direction.</div>
+                  <div>Mitigation Strategy: Collider bias was detected and empirically confirmed via stratification reversal; the corrected specification is the documented centerpiece of the project.</div>
+                </li>
+                <li>
+                  <div>Risk: Acting on the strong early-tenure correlation without identification.</div>
+                  <div>Mitigation Strategy: Explicitly flagged as &#39;requires experiment&#39;; three prioritized randomized tests were designed at 95% Bayesian power with ROPE-based stopping rules.</div>
+                </li> </ul>
+      </div>
+      
+    </div>
+    
+      
+  <div class="col card">
+    <h2>Datasets</h2>
+    
+      <div class="row">
+        <div class="col card">
+          <h3>Kaggle Telco Customer Churn (7,043 customers x 21 features)</h3>
+            
+            <a href="https://www.kaggle.com/datasets/blastchar/telco-customer-churn">https://www.kaggle.com/datasets/blastchar/telco-customer-churn</a>
+            
+        </div>
+      </div>
+    
+  </div>
+
+    
+    
+      
+<div class="col card">
+  <h2>Quantitative Analysis</h2>
+  
+    
+<table class="center">
+  <caption>Performance Metrics</caption>
+  <tr><th>Name</th><th>Value</th></tr>
+
+  <tr><td>
+AUC-ROC (H2O Stacked Ensemble)
+</td><td>
+93.4%
+</td></tr>
+
+  <tr><td>
+AUC-PR (H2O Stacked Ensemble)
+</td><td>
+96.72%
+</td></tr>
+
+  <tr><td>
+Recall on churners
+</td><td>
+~90.5%
+</td></tr>
+
+  <tr><td>
+Precision
+</td><td>
+~78%
+</td></tr>
+
+  <tr><td>
+AUC-ROC (PySpark Decision Tree baseline)
+</td><td>
+72.0%
+</td></tr>
+
+  <tr><td>
+AUC-PR (PySpark Decision Tree baseline)
+</td><td>
+52.6%
+</td></tr>
+
+  <tr><td>
+Baseline churn rate
+</td><td>
+26.5%
+</td></tr>
+
+  <tr><td>
+Causal effect of service add-on bundle (corrected)
+</td><td>
+-5.8pp, 95% CI [-8.2%, -3.4%]
+</td></tr>
+
+  <tr><td>
+P(add-ons reduce churn by 5%+)
+</td><td>
+87%
+</td></tr>
+
+  <tr><td>
+Naive (collider-biased) add-on effect
+</td><td>
+-0.2pp
+</td></tr>
+
+  <tr><td>
+Early tenure &lt;=40 days (correlational)
+</td><td>
++52pp — requires experiment
+</td></tr>
+
+  <tr><td>
+Experiment design power
+</td><td>
+95% Bayesian power, 3 prioritized tests
+</td></tr>
+
+</table>
+
+  
+  
+</div>
+
+    
+</body>
+</html>

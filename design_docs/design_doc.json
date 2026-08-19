@@ -1,0 +1,304 @@
+{
+  "title": "Telco Customer Churn \u2014 Prediction, Causal Validation, and Experimentation",
+  "subtitle": "H2O AutoML, Bayesian causal correction, and a hierarchical A/B engine",
+  "status": "As-built \u2014 dashboard deployed to Google Cloud Run",
+  "summary": "A five-phase system that moves from churn prediction to causal validation to prospective experimentation. The predictive phase reaches 93.4% AUC-ROC with an H2O stacked ensemble; the causal phase catches and corrects a collider-bias error that had understated the effect of service add-ons by an order of magnitude; the experimental phase designs three randomized tests at 95% Bayesian power with sequential monitoring.",
+  "problem": "A churn model tells you who is likely to leave but not what to do about it. Acting on predictive feature importance as if it were causal is the standard failure mode and produces retention programs that spend money without moving the metric. This system separates the two questions explicitly, and in doing so surfaces a conditioning error that would have led to abandoning a lever that actually works.",
+  "goals": [
+    "Predict churn accurately enough to prioritize retention outreach.",
+    "Estimate the causal effect of service add-ons under a defensible identification strategy.",
+    "Design randomized experiments where observational data cannot identify the effect.",
+    "Deploy a stakeholder-facing dashboard for the Bayesian results."
+  ],
+  "non_goals": [
+    "Automated retention offers driven by model score.",
+    "Real-time scoring \u2014 the pipeline is batch.",
+    "Transferring the estimates to a real telco; the data is fictionalized."
+  ],
+  "requirements": [
+    [
+      "Functional",
+      "High-recall identification of likely churners",
+      "Met \u2014 ~90.5% recall at ~78% precision"
+    ],
+    [
+      "Functional",
+      "Causal estimates must satisfy the backdoor criterion",
+      "Met \u2014 adjustment restricted to exogenous pre-treatment demographics only"
+    ],
+    [
+      "Functional",
+      "Experiments powered before launch",
+      "Met \u2014 95% Bayesian power, stratified randomization, ROPE-based stopping rules"
+    ],
+    [
+      "Functional",
+      "Sequential monitoring without inflating error rates",
+      "Met \u2014 hierarchical Bayesian A/B engine with ROPE stopping"
+    ],
+    [
+      "Non-functional",
+      "Results explorable by non-technical stakeholders",
+      "Met \u2014 Streamlit dashboard on Cloud Run"
+    ],
+    [
+      "Constraint",
+      "Snapshot data with no event log \u2014 churn timing unrecoverable",
+      "Accepted; this is precisely why tenure behaves as a collider"
+    ]
+  ],
+  "data": {
+    "sources": "Kaggle / IBM Telco Customer Churn \u2014 7,043 customers \u00d7 21 features, 26.54% churn rate",
+    "pipeline": "PySpark EDA in Phase 1; SMOTE for class balance before H2O AutoML; causal phases read the raw table directly with restricted adjustment sets.",
+    "notes": "TotalCharges is stored as TEXT because 11 rows hold a blank string \u2014 all 11 are tenure-0 customers, exactly the population the early-tenure hypothesis concerns. Service columns encode 'No internet service' as a third level (21.67% of rows), which creates collinear indicators if one-hot encoded without collapsing."
+  },
+  "candidates": [
+    [
+      "PySpark Decision Tree",
+      "AUC-ROC 72.0% \u00b7 AUC-PR 52.6%",
+      "Kept as the interpretable baseline"
+    ],
+    [
+      "H2O AutoML Stacked Ensemble (GBM + XGBoost + GLM)",
+      "AUC-ROC 93.4% \u00b7 AUC-PR 96.72% \u00b7 recall ~90.5%",
+      "Selected for the predictive phase"
+    ],
+    [
+      "Bayesian model conditioning on tenure, contract, payment method",
+      "Add-on effect \u22120.2pp \u2014 near zero",
+      "Rejected \u2014 tenure is a collider, contract and payment are co-treatments"
+    ],
+    [
+      "Bayesian model on exogenous pre-treatment demographics only",
+      "Add-on effect \u22125.8pp, 95% CI [\u22128.2%, \u22123.4%], P(\u22655% reduction) = 87%",
+      "Selected for the causal phase"
+    ]
+  ],
+  "selected": "H2O stacked ensemble for prediction; a demographics-only Bayesian specification for causal estimation; three prospective randomized experiments for everything the observational data cannot identify.",
+  "selection_rationale": "The correction is the centerpiece. Conditioning on tenure seems natural \u2014 it is the strongest correlate of churn \u2014 but tenure is caused by both add-on adoption and churn, so conditioning on it opens a non-causal path. This was confirmed empirically via stratification reversal. Moving to an exogenous-demographics-only adjustment set shifts the estimated add-on effect from \u22120.2pp to \u22125.8pp: the naive specification would have led to killing a lever that works. Where even the corrected model cannot identify an effect \u2014 notably the +52pp early-tenure signal \u2014 the answer is an experiment, not a better regression.",
+  "evaluation": {
+    "strategy": "Train/test split with SMOTE applied to training only for the predictive phase. Causal phases do not split \u2014 they estimate on the full table under a declared identification strategy, then hand off to prospective randomized tests. Phase 4 monitors those tests sequentially with ROPE-based stopping.",
+    "baseline": "PySpark Decision Tree (72.0% AUC) for prediction; the collider-biased specification (\u22120.2pp) as the cautionary causal baseline.",
+    "metrics": [
+      [
+        "AUC-ROC \u2014 H2O Stacked Ensemble",
+        "93.4%"
+      ],
+      [
+        "AUC-PR \u2014 H2O Stacked Ensemble",
+        "96.72%"
+      ],
+      [
+        "Recall on churners / Precision",
+        "~90.5% / ~78%"
+      ],
+      [
+        "AUC-ROC \u2014 PySpark Decision Tree",
+        "72.0%"
+      ],
+      [
+        "Baseline churn rate",
+        "26.54%"
+      ],
+      [
+        "Causal effect of add-on bundle (corrected)",
+        "\u22125.8pp, 95% CI [\u22128.2%, \u22123.4%]"
+      ],
+      [
+        "P(add-ons reduce churn by \u22655%)",
+        "87%"
+      ],
+      [
+        "Naive collider-biased estimate",
+        "\u22120.2pp"
+      ],
+      [
+        "Early tenure \u226440 days (correlational)",
+        "+52pp \u2014 requires experiment"
+      ],
+      [
+        "Experiment design",
+        "3 tests at 95% Bayesian power; Week 6 winner at 99% confidence"
+      ],
+      [
+        "Revenue at risk",
+        "$1.53M LTV"
+      ]
+    ]
+  },
+  "architecture": [
+    [
+      "Phase 1 \u2014 ML",
+      "PySpark, H2O AutoML",
+      "AutoML_h20_Prediction.py, Decision_Tress_analysis.py, Recommendation.py"
+    ],
+    [
+      "Phase 2 \u2014 Causal",
+      "PyMC",
+      "proper_causal_inference.py, full_dataset_causal_validation.py, bayesian_analysis_engine.py"
+    ],
+    [
+      "Phase 3 \u2014 Design",
+      "custom power analysis",
+      "power_analysis_experiments.py, sample_size_calculator.py, monte_carlo_simulation.py, experiment_randomization.py"
+    ],
+    [
+      "Phase 4 \u2014 Monitoring",
+      "hierarchical Bayesian engine",
+      "bayesian_ab_test_implementation.py, bayesian_monitoring_system.py, automated_reporting.py"
+    ],
+    [
+      "Phase 5 \u2014 Deployment",
+      "Streamlit, Docker, Cloud Run",
+      "streamlit_dashboard.py, Dockerfile, deploy_to_cloud_run.sh"
+    ],
+    [
+      "Tracking",
+      "MLflow",
+      "Experiment tracking across model runs"
+    ],
+    [
+      "Model store",
+      "Models/",
+      "model_h2o_stacked_ensemble/, decision_tree_model/"
+    ]
+  ],
+  "dataflow": [
+    "Raw Telco CSV \u2192 PySpark EDA \u2192 engineered features",
+    "features + SMOTE \u2192 H2O AutoML \u2192 stacked ensemble \u2192 Models/",
+    "raw table + exogenous demographics \u2192 PyMC \u2192 corrected causal estimate",
+    "causal estimate \u2192 power analysis \u2192 stratified randomization \u2192 assignment logs",
+    "experiment data \u2192 hierarchical Bayesian engine \u2192 sequential decision memos",
+    "results \u2192 Streamlit dashboard \u2192 Cloud Run"
+  ],
+  "deployment": {
+    "current": "The Phase 5 Streamlit dashboard is containerized and deployed to Cloud Run in us-central1 via deploy_to_cloud_run.sh, with a dedicated Dockerfile and requirements.txt under 'Phase_5_Depolyment guide'. DEPLOYMENT.md documents the procedure. The modeling and causal phases are not served \u2014 they run offline and write results that the dashboard reads.",
+    "config": [
+      [
+        "Platform",
+        "Google Cloud Run, us-central1"
+      ],
+      [
+        "Application",
+        "Phase_5/streamlit_dashboard.py"
+      ],
+      [
+        "Build",
+        "Phase_5 Dockerfile + deploy_to_cloud_run.sh"
+      ],
+      [
+        "Model artifacts",
+        "Models/model_h2o_stacked_ensemble/, Models/decision_tree_model/"
+      ],
+      [
+        "Tracking",
+        "MLflow"
+      ]
+    ],
+    "gaps": "No scoring API \u2014 the ensemble is not served, only its results are displayed. H2O models require a JVM at serving time, which is why they are not behind the dashboard. Experiment assignment logs are CSVs in the repo rather than in a durable store. Directory name 'Phase_5_Depolyment guide' contains a typo that will break naive path handling."
+  },
+  "monitoring": {
+    "current": "Phase 4 is a genuine monitoring system: the hierarchical Bayesian engine evaluates running experiments sequentially against ROPE-based stopping rules and generates automated decision memos. A Week 6 winner was declared at 99% confidence.",
+    "gaps": "This monitors experiments, not the model. There is no prediction drift tracking, no calibration check (SMOTE distorts predicted probabilities), no fairness monitoring across the demographic features that sit in both the feature and adjustment sets, and no retraining trigger."
+  },
+  "risks": [
+    [
+      "Demographics (gender, senior citizen, dependents, partner) appear in both the prediction and adjustment sets, so score-driven offers could distribute unevenly across protected groups",
+      "High",
+      "Demographics used as backdoor-criterion adjustment rather than targeting rules; the project routes decisions through stratified randomized experiments rather than model-score rollout."
+    ],
+    [
+      "Collider bias silently inverting effect direction",
+      "High",
+      "Detected, empirically confirmed via stratification reversal, and corrected \u2014 the documented centerpiece of the project."
+    ],
+    [
+      "SMOTE distorts predicted probability calibration",
+      "Medium",
+      "Acknowledged; calibration assessment is a roadmap item."
+    ],
+    [
+      "Acting on the +52pp early-tenure signal without identification",
+      "High",
+      "Explicitly flagged as 'requires experiment'; three randomized tests designed at 95% power."
+    ],
+    [
+      "Predictive accuracy mistaken for causal validity",
+      "High",
+      "The five-phase structure exists specifically to keep these separate."
+    ]
+  ],
+  "roadmap": [
+    [
+      "P0 \u2014 Data handling",
+      "TotalCharges parsed as text; 11 tenure-0 rows hold blanks",
+      "Handle explicitly rather than coercing to NaN \u2014 these are exactly the new customers the early-tenure hypothesis targets",
+      "S"
+    ],
+    [
+      "P0 \u2014 Calibration",
+      "SMOTE distorts predicted probabilities",
+      "Add isotonic or Platt calibration on a held-out set and report a reliability diagram; uncalibrated scores should not drive spend decisions",
+      "M"
+    ],
+    [
+      "P0 \u2014 Hygiene",
+      "'Phase_5_Depolyment guide' directory name is misspelled and spaced",
+      "Rename to phase_5_deployment",
+      "S"
+    ],
+    [
+      "P1 \u2014 Serving",
+      "No scoring API; H2O needs a JVM",
+      "Export the ensemble as a MOJO and serve it behind a FastAPI endpoint on Cloud Run, or retrain an equivalent sklearn/XGBoost pipeline to avoid the JVM dependency entirely",
+      "L"
+    ],
+    [
+      "P1 \u2014 Fairness",
+      "No monitoring across protected attributes",
+      "Add per-group performance and offer-rate reporting (gender, senior citizen, dependents, partner) as a standing dashboard panel",
+      "M"
+    ],
+    [
+      "P1 \u2014 Durability",
+      "Experiment assignment logs live as CSVs in the repo",
+      "Move assignments and outcomes to BigQuery or Firestore with append-only semantics",
+      "M"
+    ],
+    [
+      "P2 \u2014 Retraining",
+      "No retraining cadence",
+      "Define quarterly retraining with a champion/challenger gate on AUC-PR and calibration error, not AUC-ROC alone",
+      "M"
+    ],
+    [
+      "P2 \u2014 Drift",
+      "No prediction or feature drift tracking",
+      "Log scoring distributions and compute PSI per feature against the training reference, alerting above 0.2",
+      "M"
+    ],
+    [
+      "P2 \u2014 Operations",
+      "No SLO on the dashboard",
+      "Set an availability and latency target and wire Cloud Run alerting",
+      "S"
+    ]
+  ],
+  "open_questions": [
+    "Would a calibrated XGBoost pipeline match the H2O ensemble closely enough to drop the JVM dependency and make real-time serving practical?",
+    "The corrected add-on effect is \u22125.8pp with 87% probability of \u22655% reduction. Is that enough certainty to fund a rollout, or does it warrant the experiment first?",
+    "How much of the 93.4% AUC comes from features that are unavailable at decision time in a real deployment?"
+  ],
+  "references": [
+    "model_cards/model_card.docx \u00b7 data_cards/data_card.docx",
+    "Design_documents/ \u2014 Bayesian_Experimental_Design_Final.md, bayesian_ab_test_design.md",
+    "Phase_5_Depolyment guide/DEPLOYMENT.md"
+  ],
+  "project": "Customer_Churn_Analysis",
+  "owner": {
+    "name": "Ella Ndalla",
+    "contact": "ndallaella@gmail.com"
+  },
+  "date": "2026-08-01",
+  "schema": "ml-design-doc/1.0"
+}

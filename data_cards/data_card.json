@@ -1,0 +1,466 @@
+{
+  "schema": "data-card/1.0",
+  "project": "Customer_Churn_Analysis",
+  "title": "Telco Customer Churn",
+  "owners": [
+    {
+      "name": "Ella Ndalla",
+      "contact": "ndallaella@gmail.com"
+    }
+  ],
+  "profiling": {
+    "status": "profiled",
+    "method": "pandas profile of the committed data in this repository",
+    "tables": 1
+  },
+  "summary": "A widely used telecommunications customer dataset: 7,043 subscribers with account, service, billing, and demographic attributes plus a binary churn flag. Used for churn prediction, Bayesian causal validation, and experimental design.",
+  "provenance": {
+    "source": "Kaggle / IBM Sample Data \u2014 Telco Customer Churn",
+    "link": "https://www.kaggle.com/datasets/blastchar/telco-customer-churn",
+    "snapshot": "IBM sample dataset, circa 2018",
+    "collection": "A fictionalized extract modeled on a telecommunications CRM, distributed by IBM as demonstration data for analytics tooling. It is a single flat snapshot with no temporal dimension beyond the `tenure` field \u2014 there is no event log, so churn timing cannot be reconstructed.",
+    "license_terms": "Published by IBM as sample data and redistributed on Kaggle for public use. Commonly treated as freely usable for education and research; verify terms before commercial use.",
+    "maintenance": "Static sample dataset; IBM has not versioned it. No refresh path exists in this project."
+  },
+  "labeling": "`Churn` (Yes/No) is a system-of-record status flag at snapshot time, not a human annotation. Profiled churn rate is 26.54% (1,869 of 7,043), matching the project's stated baseline. The label carries no date, so 'churned' means 'had churned by the snapshot', which is what makes `tenure` a collider on the causal path.",
+  "preprocessing": "PySpark EDA; SMOTE oversampling for class balance before H2O AutoML training. For causal work, adjustment is restricted to exogenous pre-treatment demographics (SeniorCitizen, Dependents, Partner, Gender) \u2014 tenure, contract type, payment method, and charges are deliberately excluded as collider, co-treatment, and mediator respectively.",
+  "splits": "Standard train/test split for the predictive phase with SMOTE applied to training only. The causal and experimental phases do not split; they estimate on the full table and then design prospective randomized tests with stratified randomization.",
+  "sensitive_data": "Contains customer-level demographics \u2014 gender, senior citizen status, partner and dependent status \u2014 alongside billing amounts. customerID is a surrogate key with no external meaning. Because these demographics appear in BOTH the predictive feature set and the causal adjustment set, model-scored retention offers could distribute unevenly across protected groups.",
+  "recommended_uses": [
+    "Churn modeling under class imbalance.",
+    "Demonstrating collider bias detection and correction in observational causal analysis."
+  ],
+  "discouraged_uses": [
+    "Transferring coefficients or churn drivers to a real telco \u2014 the data is fictionalized.",
+    "Using demographic effects to target or price offers."
+  ],
+  "quality_issues": [
+    "`TotalCharges` is stored as TEXT, not numeric, because 11 rows contain a blank string instead of a value. All 11 are customers with tenure = 0 (never billed). A naive pd.to_numeric or astype(float) will raise, and a silent coerce turns them into NaN \u2014 worth handling explicitly since these are exactly the new customers the early-tenure hypothesis concerns.",
+    "No other missing values: 0% nulls across all 21 columns, and no duplicate rows.",
+    "Service columns encode 'No internet service' / 'No phone service' as a third level rather than as missing \u2014 21.67% of rows for the six internet-dependent columns. One-hot encoding without collapsing these creates perfectly collinear indicators.",
+    "Class imbalance is moderate (26.54% churn), which SMOTE addresses but at the cost of probability calibration.",
+    "`tenure` ranges 0-72 months with 73 distinct values, so the dataset spans at most six years of customer relationships \u2014 long-tenure behavior is unobserved."
+  ],
+  "tables": [
+    {
+      "name": "WA_Fn-UseC_-Telco-Customer-Churn \u2014 raw Telco extract",
+      "source": "Customer_Churn_Analysis/Raw_data/WA_Fn-UseC_-Telco-Customer-Churn.csv.xls",
+      "note": "Full file profiled. Despite the .xls extension the file is CSV.",
+      "rows": 7043,
+      "columns": 21,
+      "duplicate_rows": 0,
+      "memory_mb": 1.18,
+      "fields": [
+        {
+          "name": "customerID",
+          "dtype": "object",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "n_unique": 7043
+        },
+        {
+          "name": "gender",
+          "dtype": "object",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "n_unique": 2,
+          "top_values": [
+            {
+              "value": "Male",
+              "count": 3555,
+              "pct": 50.48
+            },
+            {
+              "value": "Female",
+              "count": 3488,
+              "pct": 49.52
+            }
+          ]
+        },
+        {
+          "name": "SeniorCitizen",
+          "dtype": "int64",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "n_unique": 2,
+          "min": 0.0,
+          "max": 1.0,
+          "mean": 0.1621468124378816,
+          "std": 0.36858543603093713,
+          "p50": 0.0
+        },
+        {
+          "name": "Partner",
+          "dtype": "object",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "n_unique": 2,
+          "top_values": [
+            {
+              "value": "No",
+              "count": 3641,
+              "pct": 51.7
+            },
+            {
+              "value": "Yes",
+              "count": 3402,
+              "pct": 48.3
+            }
+          ]
+        },
+        {
+          "name": "Dependents",
+          "dtype": "object",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "n_unique": 2,
+          "top_values": [
+            {
+              "value": "No",
+              "count": 4933,
+              "pct": 70.04
+            },
+            {
+              "value": "Yes",
+              "count": 2110,
+              "pct": 29.96
+            }
+          ]
+        },
+        {
+          "name": "tenure",
+          "dtype": "int64",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "n_unique": 73,
+          "min": 0.0,
+          "max": 72.0,
+          "mean": 32.37114865824223,
+          "std": 24.55773742286344,
+          "p50": 29.0
+        },
+        {
+          "name": "PhoneService",
+          "dtype": "object",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "n_unique": 2,
+          "top_values": [
+            {
+              "value": "Yes",
+              "count": 6361,
+              "pct": 90.32
+            },
+            {
+              "value": "No",
+              "count": 682,
+              "pct": 9.68
+            }
+          ]
+        },
+        {
+          "name": "MultipleLines",
+          "dtype": "object",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "n_unique": 3,
+          "top_values": [
+            {
+              "value": "No",
+              "count": 3390,
+              "pct": 48.13
+            },
+            {
+              "value": "Yes",
+              "count": 2971,
+              "pct": 42.18
+            },
+            {
+              "value": "No phone service",
+              "count": 682,
+              "pct": 9.68
+            }
+          ]
+        },
+        {
+          "name": "InternetService",
+          "dtype": "object",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "n_unique": 3,
+          "top_values": [
+            {
+              "value": "Fiber optic",
+              "count": 3096,
+              "pct": 43.96
+            },
+            {
+              "value": "DSL",
+              "count": 2421,
+              "pct": 34.37
+            },
+            {
+              "value": "No",
+              "count": 1526,
+              "pct": 21.67
+            }
+          ]
+        },
+        {
+          "name": "OnlineSecurity",
+          "dtype": "object",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "n_unique": 3,
+          "top_values": [
+            {
+              "value": "No",
+              "count": 3498,
+              "pct": 49.67
+            },
+            {
+              "value": "Yes",
+              "count": 2019,
+              "pct": 28.67
+            },
+            {
+              "value": "No internet service",
+              "count": 1526,
+              "pct": 21.67
+            }
+          ]
+        },
+        {
+          "name": "OnlineBackup",
+          "dtype": "object",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "n_unique": 3,
+          "top_values": [
+            {
+              "value": "No",
+              "count": 3088,
+              "pct": 43.84
+            },
+            {
+              "value": "Yes",
+              "count": 2429,
+              "pct": 34.49
+            },
+            {
+              "value": "No internet service",
+              "count": 1526,
+              "pct": 21.67
+            }
+          ]
+        },
+        {
+          "name": "DeviceProtection",
+          "dtype": "object",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "n_unique": 3,
+          "top_values": [
+            {
+              "value": "No",
+              "count": 3095,
+              "pct": 43.94
+            },
+            {
+              "value": "Yes",
+              "count": 2422,
+              "pct": 34.39
+            },
+            {
+              "value": "No internet service",
+              "count": 1526,
+              "pct": 21.67
+            }
+          ]
+        },
+        {
+          "name": "TechSupport",
+          "dtype": "object",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "n_unique": 3,
+          "top_values": [
+            {
+              "value": "No",
+              "count": 3473,
+              "pct": 49.31
+            },
+            {
+              "value": "Yes",
+              "count": 2044,
+              "pct": 29.02
+            },
+            {
+              "value": "No internet service",
+              "count": 1526,
+              "pct": 21.67
+            }
+          ]
+        },
+        {
+          "name": "StreamingTV",
+          "dtype": "object",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "n_unique": 3,
+          "top_values": [
+            {
+              "value": "No",
+              "count": 2810,
+              "pct": 39.9
+            },
+            {
+              "value": "Yes",
+              "count": 2707,
+              "pct": 38.44
+            },
+            {
+              "value": "No internet service",
+              "count": 1526,
+              "pct": 21.67
+            }
+          ]
+        },
+        {
+          "name": "StreamingMovies",
+          "dtype": "object",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "n_unique": 3,
+          "top_values": [
+            {
+              "value": "No",
+              "count": 2785,
+              "pct": 39.54
+            },
+            {
+              "value": "Yes",
+              "count": 2732,
+              "pct": 38.79
+            },
+            {
+              "value": "No internet service",
+              "count": 1526,
+              "pct": 21.67
+            }
+          ]
+        },
+        {
+          "name": "Contract",
+          "dtype": "object",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "n_unique": 3,
+          "top_values": [
+            {
+              "value": "Month-to-month",
+              "count": 3875,
+              "pct": 55.02
+            },
+            {
+              "value": "Two year",
+              "count": 1695,
+              "pct": 24.07
+            },
+            {
+              "value": "One year",
+              "count": 1473,
+              "pct": 20.91
+            }
+          ]
+        },
+        {
+          "name": "PaperlessBilling",
+          "dtype": "object",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "n_unique": 2,
+          "top_values": [
+            {
+              "value": "Yes",
+              "count": 4171,
+              "pct": 59.22
+            },
+            {
+              "value": "No",
+              "count": 2872,
+              "pct": 40.78
+            }
+          ]
+        },
+        {
+          "name": "PaymentMethod",
+          "dtype": "object",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "n_unique": 4,
+          "top_values": [
+            {
+              "value": "Electronic check",
+              "count": 2365,
+              "pct": 33.58
+            },
+            {
+              "value": "Mailed check",
+              "count": 1612,
+              "pct": 22.89
+            },
+            {
+              "value": "Bank transfer (automatic)",
+              "count": 1544,
+              "pct": 21.92
+            },
+            {
+              "value": "Credit card (automatic)",
+              "count": 1522,
+              "pct": 21.61
+            }
+          ]
+        },
+        {
+          "name": "MonthlyCharges",
+          "dtype": "float64",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "n_unique": 1585,
+          "min": 18.25,
+          "max": 118.75,
+          "mean": 64.76169246059918,
+          "std": 30.087910854936975,
+          "p50": 70.35
+        },
+        {
+          "name": "TotalCharges",
+          "dtype": "object",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "n_unique": 6531
+        },
+        {
+          "name": "Churn",
+          "dtype": "object",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "n_unique": 2,
+          "top_values": [
+            {
+              "value": "No",
+              "count": 5174,
+              "pct": 73.46
+            },
+            {
+              "value": "Yes",
+              "count": 1869,
+              "pct": 26.54
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
