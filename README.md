@@ -45,7 +45,7 @@ This project addresses a core business problem in telecommunications: **predicti
 
 | Phase | Focus | Primary Output |
 |-------|-------|----------------|
-| **1. ML Analysis** | PySpark EDA + H2O AutoML | 96.4% AUC-ROC stacked ensemble |
+| **1. ML Analysis** | PySpark EDA + H2O AutoML | 93.4% AUC-ROC / 96.7% AUC-PR stacked ensemble |
 | **2. Causal Validation** | Collider correction, Bayesian causal estimation | −5.8pp causal add-on effect (87% probability) |
 | **3. Experimental Design** | Power analysis, stratified randomisation | 3 targeted Bayesian tests, 95% power |
 | **4. Implementation & Monitoring** | Hierarchical Bayesian A/B engine, sequential monitoring | Week 6 winner declared, 99% confidence |
@@ -82,7 +82,7 @@ Because observational data has fundamental limits even after correction, the pro
 | Model | AUC-ROC | AUC-PR | Recall (Churners) | Precision |
 |-------|---------|--------|-------------------|-----------|
 | Decision Tree (PySpark) | 72.0% | 52.6% | ~65% | ~72% |
-| **H2O Stacked Ensemble** | **93.4%** | **96.72%** | **~90.5%** | **~78%** |
+| **H2O Stacked Ensemble** | **93.4%** | **96.7%** | **~90.5%** | **~78%** |
 
 **Selected model:** H2O AutoML Stacked Ensemble — combines GBM, XGBoost, and GLM base learners via metalearner. SMOTE applied for class balancing.
 
@@ -217,7 +217,7 @@ aml.train(x=features, y="Churn", training_frame=train_h2o)
 leader = aml.leader  # Stacked Ensemble: GBM + XGBoost + GLM via metalearner
 ```
 
-**Results:** AUC-ROC 93.4% · AUC-PR 96.72% · Recall ~90.5% · Precision ~78%
+**Results:** AUC-ROC 93.4% · AUC-PR 96.7% · Recall ~90.5% · Precision ~78%
 
 SMOTE oversampling (`imblearn`) was applied to address class imbalance (26.5% positive class) before H2O training. All runs tracked with MLflow — hyperparameters, AUC-ROC, AUC-PR, F1, confusion matrix, ROC curve, and feature importance.
 
